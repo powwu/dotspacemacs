@@ -650,9 +650,9 @@ before packages are loaded."
   (defun find-nixos-flake ()
     "Edit the nixos flake dotfile, in the current window." ; Doc string.
     (interactive)
-    (find-file-existing "/sudo::/etc/nixos/flake.nix"))
-
-
+    (if (eq system-type 'darwin)
+        (find-file-existing "/etc/nix-darwin/flake.nix")
+      (find-file-existing "/sudo::/etc/nixos/flake.nix")))
 
 
   (define-key evil-normal-state-map (kbd "SPC i s") #'insert-snippet)
