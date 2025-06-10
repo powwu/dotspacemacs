@@ -581,6 +581,15 @@ before packages are loaded."
   ;; (exwm-config-example)
   ;; (add-hook 'prog-mode-hook)
 
+  (use-package go-mode
+    :config
+    (when (executable-find "gofmt")
+      (setq gofmt-command "gofmt"))
+    (defun powwu/go-mode-hook ()
+      (add-hook 'before-save-hook #'gofmt-before-save nil 'local))
+    (add-hook 'go-mode-hook #'powwu/go-mode-hook)
+    )
+
   (defun insert-snippet ()
     "Insert snippet interactively from ~/.snippets" ; Doc string.
     (interactive)
