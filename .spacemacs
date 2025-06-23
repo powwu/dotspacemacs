@@ -581,6 +581,8 @@ before packages are loaded."
   ;; (exwm-config-example)
   ;; (add-hook 'prog-mode-hook)
 
+  (add-to-list 'default-frame-alist '(alpha-background . 80))
+
   (use-package go-mode
     :config
     (when (executable-find "gofmt")
