@@ -646,12 +646,12 @@ before packages are loaded."
   (defun find-home-manager ()
     "Edit the home-manager dotfile, in the current window." ; Doc string.
     (interactive)
-    (find-file-existing "/sudo::/etc/nixos/home-manager/home.nix"))
+    (find-file-existing "/sudo::/etc/nixos/home-manager/"))
 
   (defun find-nixos-extra ()
     "Edit the nixos flake dotfile, in the current window." ; Doc string.
     (interactive)
-    (find-file-existing "/sudo::/etc/nixos/extra/extra.nix"))
+    (find-file-existing "/sudo::/etc/nixos/extra/"))
 
   (defun find-nixos-config ()
     "Edit the nixos config dotfile, in the current window." ; Doc string.
