@@ -19,4 +19,5 @@ git add -u .
 git commit -m "$(date --iso-8601=s)"
 git push
 
-echo "Remember to update your nix config (/etc/nixos/update-nix.sh)"
+echo "Remember to update your nix config:"
+echo "sudo /etc/nixos/update-nix.sh"
