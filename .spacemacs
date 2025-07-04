@@ -71,7 +71,12 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(ewal-spacemacs-themes ewal nix-mode nix-buffer nix-sandbox exwm mistty helm v-mode kotlin-mode)
+   dotspacemacs-additional-packages '(ewal-spacemacs-themes ewal nix-mode nix-buffer nix-sandbox exwm mistty helm v-mode kotlin-mode dash deferred request-deferred request quelpa quelpa-use-package
+                                                            (org-trello
+                                                             :location (recipe
+                                                                        :fetcher git
+                                                                        :url     "https://github.com/powwu/org-trello.git"))
+                                                            package-build)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -674,14 +679,16 @@ before packages are loaded."
 
   ;; (treemacs :variables treemacs-use-git-mode 'deferred)
 
-  ;; Install use-package
-  (straight-use-package 'use-package)
-
-  (use-package org-trello
-    :straight (:build (:not compile)) t)
+  ;; (let ((inhibit-message       t)
+  ;;       (byte-compile-verbose  nil)
+  ;;       (byte-compile-warnings nil))
+  ;;   (quelpa
+  ;;    '(org-trello
+  ;;      :fetcher git
+  ;;      :url     "https://github.com/powwu/org-trello.git"
+  ;;      :files   ("*.el" "lisp/*.el"))))
 
   (require 'org-trello)
-
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -703,6 +710,7 @@ This function is called at the very end of Spacemacs initialization."
        "edf5e3ea8b3bbb4602feef2dfac8a6d5dae316fb78e84f360d55dfda0d37fa09"
        "41098e2f8fa67dc51bbe89cce4fb7109f53a164e3a92356964c72f76d068587e"
        "ba72dfc6bb260a9d8609136b9166e04ad0292b9760a3e2431cf0cd0679f83c3a" default))
+   '(org-trello-current-prefix-keybinding "C-c o")
    '(package-selected-packages
      '(ace-jump-helm-line ace-link add-node-modules-path aggressive-indent
                           all-the-icons auto-compile auto-highlight-symbol bui
@@ -725,27 +733,28 @@ This function is called at the very end of Spacemacs initialization."
                           ggtags gh-md go-eldoc go-fill-struct go-gen-test go-guru
                           go-impl go-mode go-rename go-tag godoctor golden-ratio
                           google-translate gpt grizzl hasklig-mode helm-ag
-                          helm-company helm-descbinds helm-helm-commands helm-make
-                          helm-mode-manager helm-org helm-projectile helm-purpose
-                          helm-selector helm-swoop helm-themes helm-xref helm-z
-                          help-fns+ hide-comnt highlight-indentation
-                          highlight-numbers highlight-parentheses hl-todo
-                          holy-mode hungry-delete hybrid-mode import-js
-                          indent-guide info+ inspector ivy ligature link-hint
-                          lorem-ipsum lsp-docker lsp-mode lsp-treemacs macrostep
-                          markdown-mode markdown-toc mmm-mode multi-line nameless
-                          nix-buffer nix-mode nix-sandbox open-junk-file
-                          org-superstar overseer paradox password-generator
-                          pcre2el popwin pos-tip quickrun rainbow-delimiters
-                          request restart-emacs spaceline spacemacs-purpose-popwin
-                          spacemacs-whitespace-cleanup string-edit-at-point
-                          string-inflection swiper symbol-overlay symon
-                          term-cursor tern tide toc-org treemacs-evil
-                          treemacs-icons-dired treemacs-persp treemacs-projectile
-                          typescript-mode undo-tree use-package uuidgen v-mode
-                          valign vi-tilde-fringe vim-powerline vmd-mode
-                          volatile-highlights w3m web-mode which-key winum
-                          writeroom-mode ws-butler yaml yasnippet)))
+                          helm-company helm-dash helm-descbinds helm-helm-commands
+                          helm-make helm-mode-manager helm-org helm-projectile
+                          helm-purpose helm-selector helm-swoop helm-themes
+                          helm-xref helm-z help-fns+ hide-comnt
+                          highlight-indentation highlight-numbers
+                          highlight-parentheses hl-todo holy-mode hungry-delete
+                          hybrid-mode import-js indent-guide info+ inspector ivy
+                          ligature link-hint lorem-ipsum lsp-docker lsp-mode
+                          lsp-treemacs macrostep markdown-mode markdown-toc
+                          mmm-mode multi-line nameless nix-buffer nix-mode
+                          nix-sandbox open-junk-file org-superstar org-trello
+                          overseer package-build paradox password-generator
+                          pcre2el popwin pos-tip quelpa quickrun
+                          rainbow-delimiters request restart-emacs spaceline
+                          spacemacs-purpose-popwin spacemacs-whitespace-cleanup
+                          string-edit-at-point string-inflection swiper
+                          symbol-overlay symon term-cursor tern tide toc-org
+                          treemacs-evil treemacs-icons-dired treemacs-persp
+                          treemacs-projectile typescript-mode undo-tree
+                          use-package uuidgen v-mode valign vi-tilde-fringe
+                          vim-powerline vmd-mode volatile-highlights w3m web-mode
+                          which-key winum writeroom-mode ws-butler yaml yasnippet)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
