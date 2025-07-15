@@ -71,7 +71,7 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(ewal-spacemacs-themes ewal nix-mode nix-buffer nix-sandbox exwm mistty helm v-mode kotlin-mode dash deferred request-deferred request quelpa quelpa-use-package
+   dotspacemacs-additional-packages '(ewal-spacemacs-themes ewal nix-mode nix-buffer nix-sandbox scad-mode mistty helm v-mode kotlin-mode dash deferred request-deferred request quelpa quelpa-use-package
                                                             (org-trello
                                                              :location (recipe
                                                                         :fetcher git
