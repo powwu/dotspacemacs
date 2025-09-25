@@ -681,17 +681,6 @@ before packages are loaded."
   (define-key evil-normal-state-map (kbd "SPC f e f x") #'find-nixos-extra)
 
   ;; (treemacs :variables treemacs-use-git-mode 'deferred)
-
-  ;; (let ((inhibit-message       t)
-  ;;       (byte-compile-verbose  nil)
-  ;;       (byte-compile-warnings nil))
-  ;;   (quelpa
-  ;;    '(org-trello
-  ;;      :fetcher git
-  ;;      :url     "https://github.com/powwu/org-trello.git"
-  ;;      :files   ("*.el" "lisp/*.el"))))
-
-  (require 'org-trello)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -713,7 +702,6 @@ This function is called at the very end of Spacemacs initialization."
        "edf5e3ea8b3bbb4602feef2dfac8a6d5dae316fb78e84f360d55dfda0d37fa09"
        "41098e2f8fa67dc51bbe89cce4fb7109f53a164e3a92356964c72f76d068587e"
        "ba72dfc6bb260a9d8609136b9166e04ad0292b9760a3e2431cf0cd0679f83c3a" default))
-   '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello-setup))
    '(package-selected-packages
      '(ace-jump-helm-line ace-link add-node-modules-path aggressive-indent
                           all-the-icons auto-compile auto-highlight-symbol bui
@@ -747,7 +735,7 @@ This function is called at the very end of Spacemacs initialization."
                           lsp-mode lsp-treemacs macrostep markdown-mode
                           markdown-toc mmm-mode multi-line nameless nix-buffer
                           nix-mode nix-sandbox open-junk-file org-superstar
-                          org-trello overseer package-build paradox
+                          overseer package-build paradox
                           password-generator pcre2el popwin pos-tip quelpa
                           quickrun rainbow-delimiters request restart-emacs
                           spaceline spacemacs-purpose-popwin
