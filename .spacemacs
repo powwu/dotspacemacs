@@ -581,6 +581,13 @@ before packages are loaded."
   ;; (exwm-config-example)
   ;; (add-hook 'prog-mode-hook)
 
+  ;; make spacemacs-buffer-mode use normal-state for custom keybinds
+  (add-hook 'spacemacs-buffer-mode-hook
+            (lambda ()
+              (run-with-timer 0.1 nil
+                              (lambda ()
+                                (evil-normal-state)))))
+
   ;; scad-mode fixes
   (require 'scad-mode)
   (add-hook 'scad-preview-mode-hook
@@ -679,6 +686,7 @@ before packages are loaded."
   (define-key evil-normal-state-map (kbd "SPC f e f n") #'find-nixos-config)
   (define-key evil-normal-state-map (kbd "SPC f e f f") #'find-nixos-flake)
   (define-key evil-normal-state-map (kbd "SPC f e f x") #'find-nixos-extra)
+
 
   ;; (treemacs :variables treemacs-use-git-mode 'deferred)
   )
