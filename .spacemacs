@@ -276,6 +276,7 @@ It should only modify the values of Spacemacs settings."
    ;; (default "SPC")
    dotspacemacs-emacs-command-key "SPC"
 
+
    ;; The key used for Vim Ex commands (default ":")
    dotspacemacs-ex-command-key ":"
 
@@ -580,6 +581,7 @@ before packages are loaded."
   ;; (require 'exwm-config)
   ;; (exwm-config-example)
   ;; (add-hook 'prog-mode-hook)
+  (require 'vterm)
 
   ;; make spacemacs-buffer-mode use normal-state for custom keybinds
   (add-hook 'spacemacs-buffer-mode-hook
@@ -587,6 +589,46 @@ before packages are loaded."
               (run-with-timer 0.1 nil
                               (lambda ()
                                 (evil-normal-state)))))
+
+  ;; make dired-mode use normal-state for custom keybinds
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (run-with-timer 0.1 nil
+                              (lambda ()
+                                (evil-normal-state)))))
+
+
+  ;; make term not need to prompt for shell
+  (setq explicit-shell-file-name (getenv "SHELL"))
+  (defun terminal ()
+    (interactive)
+    (term (or explicit-shell-file-name
+              shell-file-name
+              (getenv "SHELL")
+              "/bin/sh")))
+
+  (defun runcmd (cmd)
+    (interactive)
+    (start-process-shell-command cmd nil cmd))
+
+  (run-with-timer 0.1 nil
+                  (runcmd "swww-daemon"))
+
+  (use-package ewm
+    :bind (:map ewm-mode-map
+                ("s-\\" . (lambda () (interactive) (runcmd "firefox")))
+                ("s-W" . (lambda () (interactive)
+                           (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
+                ("s-<tab>" . (lambda () (interactive)
+                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
+                ("<Print>" . (lambda () (interactive)
+                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
+                ("s-SPC" . spacemacs-cmds)
+                ("s-x" . kill-buffer-and-window)
+                ("s-<return>" . terminal))
+    )
+  ;; (add-to-list 'ewm-intercept-prefixes ?\M-\‘)  ; tmm-menubar
+  ;; (add-to-list 'ewm-intercept-prefixes '(s-SPC s-<return> (s-<tab> :fullscreen)))
 
   ;; scad-mode fixes
   (require 'scad-mode)
@@ -658,6 +700,7 @@ before packages are loaded."
     (insert-file-contents filename)
     )
 
+
   (defun find-home-manager ()
     "Edit the home-manager dotfile, in the current window." ; Doc string.
     (interactive)
@@ -682,10 +725,14 @@ before packages are loaded."
 
 
   (define-key evil-normal-state-map (kbd "SPC i s") #'insert-snippet)
-  (define-key evil-normal-state-map (kbd "SPC f e f h") #'find-home-manager)
-  (define-key evil-normal-state-map (kbd "SPC f e f n") #'find-nixos-config)
-  (define-key evil-normal-state-map (kbd "SPC f e f f") #'find-nixos-flake)
-  (define-key evil-normal-state-map (kbd "SPC f e f x") #'find-nixos-extra)
+  (define-key evil-normal-state-map (kbd "SPC f e n h") #'find-home-manager)
+  (define-key evil-visual-state-map (kbd "SPC f e n h") #'find-home-manager)
+  (define-key evil-normal-state-map (kbd "SPC f e n n") #'find-nixos-config)
+  (define-key evil-visual-state-map (kbd "SPC f e n n") #'find-nixos-config)
+  (define-key evil-normal-state-map (kbd "SPC f e n f") #'find-nixos-flake)
+  (define-key evil-visual-state-map (kbd "SPC f e n f") #'find-nixos-flake)
+  (define-key evil-normal-state-map (kbd "SPC f e n x") #'find-nixos-extra)
+  (define-key evil-visual-state-map (kbd "SPC f e n x") #'find-nixos-extra)
 
 
   ;; (treemacs :variables treemacs-use-git-mode 'deferred)
@@ -743,18 +790,18 @@ This function is called at the very end of Spacemacs initialization."
                           lsp-mode lsp-treemacs macrostep markdown-mode
                           markdown-toc mmm-mode multi-line nameless nix-buffer
                           nix-mode nix-sandbox open-junk-file org-superstar
-                          overseer package-build paradox
-                          password-generator pcre2el popwin pos-tip quelpa
-                          quickrun rainbow-delimiters request restart-emacs
-                          spaceline spacemacs-purpose-popwin
-                          spacemacs-whitespace-cleanup string-edit-at-point
-                          string-inflection swiper symbol-overlay symon
-                          term-cursor tern tide toc-org treemacs-evil
-                          treemacs-icons-dired treemacs-persp treemacs-projectile
-                          typescript-mode undo-tree use-package uuidgen v-mode
-                          valign vi-tilde-fringe vim-powerline vmd-mode
-                          volatile-highlights w3m web-mode which-key winum
-                          writeroom-mode ws-butler yaml yasnippet)))
+                          overseer package-build paradox password-generator
+                          pcre2el popwin pos-tip quelpa quickrun
+                          rainbow-delimiters request restart-emacs spaceline
+                          spacemacs-purpose-popwin spacemacs-whitespace-cleanup
+                          string-edit-at-point string-inflection swiper
+                          symbol-overlay symon term+ term-cursor tern tide toc-org
+                          treemacs-evil treemacs-icons-dired treemacs-persp
+                          treemacs-projectile typescript-mode undo-tree
+                          use-package uuidgen v-mode valign vi-tilde-fringe
+                          vim-powerline vmd-mode volatile-highlights vterm w3m
+                          web-mode which-key winum writeroom-mode ws-butler yaml
+                          yasnippet)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
