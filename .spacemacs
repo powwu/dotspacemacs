@@ -32,7 +32,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(html
+   '(rust
+     html
      octave
      php
      go
@@ -351,7 +352,7 @@ It should only modify the values of Spacemacs settings."
    ;; another same-purpose window is available. If non-nil, `switch-to-buffer'
    ;; displays the buffer in a same-purpose window even if the buffer can be
    ;; displayed in the current window. (default nil)
-   dotspacemacs-switch-to-buffer-prefers-purpose nil
+   dotspacemacs-switch-to-buffer-prefers-purpose t
 
    ;; If non-nil a progress bar is displayed when spacemacs is loading. This
    ;; may increase the boot time on some systems and emacs builds, set it to
@@ -374,7 +375,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
    ;; variable with `dotspacemacs-maximized-at-startup' to obtain fullscreen
    ;; without external boxes. Also disables the internal border. (default nil)
-   dotspacemacs-undecorated-at-startup nil
+   dotspacemacs-undecorated-at-startup t
 
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
@@ -409,7 +410,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Show the scroll bar while scrolling. The auto hide time can be configured
    ;; by setting this variable to a number. (default t) := <=
-   dotspacemacs-scroll-bar-while-scrolling t
+   dotspacemacs-scroll-bar-while-scrolling nil
 
    ;; Control line numbers activation.
    ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
@@ -552,6 +553,7 @@ default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env)
+
   )
 
 (defun dotspacemacs/user-init ()
@@ -560,6 +562,24 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+
+  ;; add window transparency
+  (add-to-list 'default-frame-alist '(alpha-background . 80))
+
+  (use-package ewm
+    :bind (:map ewm-mode-map
+                ("s-\\" . (lambda () (interactive) (runcmd "firefox")))
+                ("s-W" . (lambda () (interactive)
+                           (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
+                ("s-<tab>" . (lambda () (interactive)
+                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
+                ("<Print>" . (lambda () (interactive)
+                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
+                ("s-SPC" . spacemacs-cmds)
+                ("s-x" . kill-buffer-and-window)
+                ("s-<return>" . terminal))
+    )
+
   )
 
 
@@ -598,35 +618,20 @@ before packages are loaded."
                                 (evil-normal-state)))))
 
 
-  ;; make term not need to prompt for shell
-  (setq explicit-shell-file-name (getenv "SHELL"))
   (defun terminal ()
     (interactive)
-    (term (or explicit-shell-file-name
-              shell-file-name
-              (getenv "SHELL")
-              "/bin/sh")))
+    (split-window-sensibly)
+    (runcmd "alacritty"))
 
   (defun runcmd (cmd)
     (interactive)
     (start-process-shell-command cmd nil cmd))
 
-  (run-with-timer 0.1 nil
-                  (runcmd "swww-daemon"))
+  ;; Run on startup
+  (runcmd "swww-daemon")
+  (runcmd "mako")
+  (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")
 
-  (use-package ewm
-    :bind (:map ewm-mode-map
-                ("s-\\" . (lambda () (interactive) (runcmd "firefox")))
-                ("s-W" . (lambda () (interactive)
-                           (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
-                ("s-<tab>" . (lambda () (interactive)
-                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
-                ("<Print>" . (lambda () (interactive)
-                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
-                ("s-SPC" . spacemacs-cmds)
-                ("s-x" . kill-buffer-and-window)
-                ("s-<return>" . terminal))
-    )
   ;; (add-to-list 'ewm-intercept-prefixes ?\M-\‘)  ; tmm-menubar
   ;; (add-to-list 'ewm-intercept-prefixes '(s-SPC s-<return> (s-<tab> :fullscreen)))
 
@@ -636,8 +641,6 @@ before packages are loaded."
             (lambda ()
               (evil-make-intercept-map scad-preview-mode-map)))
 
-  ;; add window transparency
-  (add-to-list 'default-frame-alist '(alpha-background . 80))
 
   ;; format go code on save
   (use-package go-mode
@@ -792,16 +795,16 @@ This function is called at the very end of Spacemacs initialization."
                           nix-mode nix-sandbox open-junk-file org-superstar
                           overseer package-build paradox password-generator
                           pcre2el popwin pos-tip quelpa quickrun
-                          rainbow-delimiters request restart-emacs spaceline
-                          spacemacs-purpose-popwin spacemacs-whitespace-cleanup
-                          string-edit-at-point string-inflection swiper
-                          symbol-overlay symon term+ term-cursor tern tide toc-org
-                          treemacs-evil treemacs-icons-dired treemacs-persp
-                          treemacs-projectile typescript-mode undo-tree
-                          use-package uuidgen v-mode valign vi-tilde-fringe
-                          vim-powerline vmd-mode volatile-highlights vterm w3m
-                          web-mode which-key winum writeroom-mode ws-butler yaml
-                          yasnippet)))
+                          rainbow-delimiters request restart-emacs ron-mode
+                          rust-mode rustic spaceline spacemacs-purpose-popwin
+                          spacemacs-whitespace-cleanup string-edit-at-point
+                          string-inflection swiper symbol-overlay symon term+
+                          term-cursor tern tide toc-org treemacs-evil
+                          treemacs-icons-dired treemacs-persp treemacs-projectile
+                          typescript-mode undo-tree use-package uuidgen v-mode
+                          valign vi-tilde-fringe vim-powerline vmd-mode
+                          volatile-highlights vterm w3m web-mode which-key winum
+                          writeroom-mode ws-butler xterm-color yaml yasnippet)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
