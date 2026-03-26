@@ -562,19 +562,42 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  ;; (setq ewm-output-config
+  ;;       '(("HDMI-A-1" :width 1920 :height 1080 :scale 1.0 :refresh 144)
+  ;;         ("DP-3" :width 1920 :height 1080 :scale 1.4)))
 
   ;; add window transparency
   (add-to-list 'default-frame-alist '(alpha-background . 80))
 
+
+
   (use-package ewm
+    :custom
+    (ewm-output-config '(("HDMI-A-1" :width 1920 :height 1080 :scale 1.0 :refresh 144)
+                         ("DP-3" :width 1920 :height 1080 :scale 1.4 :x 3840 :y 0)))
     :bind (:map ewm-mode-map
+                ;; Layers (Spacemacs workspaces)
+                ("s-1" . spacemacs/persp-switch-to-1)
+                ("s-2" . spacemacs/persp-switch-to-2)
+                ("s-3" . spacemacs/persp-switch-to-3)
+                ("s-4" . spacemacs/persp-switch-to-4)
+                ("s-5" . spacemacs/persp-switch-to-5)
+                ("s-6" . spacemacs/persp-switch-to-6)
+                ("s-7" . spacemacs/persp-switch-to-7)
+                ("s-8" . spacemacs/persp-switch-to-8)
+                ("s-9" . spacemacs/persp-switch-to-9)
+                ("s-0" . spacemacs/persp-switch-to-0)
+                ("M-s-<return>" . (lambda () (interactive) (persp-switch "Mail")))
+
+                ;; Applications
+                ("<PowerOff>" . (lambda () (interactive) (runcmd "archlinux-logout")))
                 ("s-\\" . (lambda () (interactive) (runcmd "firefox")))
                 ("s-W" . (lambda () (interactive)
                            (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
                 ("s-<tab>" . (lambda () (interactive)
-                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
+                               (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
                 ("<Print>" . (lambda () (interactive)
-                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
+                               (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
                 ("s-SPC" . spacemacs-cmds)
                 ("s-x" . kill-buffer-and-window)
                 ("s-<return>" . terminal))
@@ -601,7 +624,10 @@ before packages are loaded."
   ;; (require 'exwm-config)
   ;; (exwm-config-example)
   ;; (add-hook 'prog-mode-hook)
-  (require 'vterm)
+
+  ;; Split horizontally always
+  (setq split-height-threshold nil)
+  (setq split-width-threshold 0)
 
   ;; make spacemacs-buffer-mode use normal-state for custom keybinds
   (add-hook 'spacemacs-buffer-mode-hook
@@ -620,20 +646,133 @@ before packages are loaded."
 
   (defun terminal ()
     (interactive)
-    (split-window-sensibly)
+    ;; (split-window-sensibly)
     (runcmd "alacritty"))
 
   (defun runcmd (cmd)
     (interactive)
     (start-process-shell-command cmd nil cmd))
 
-  ;; Run on startup
-  (runcmd "swww-daemon")
-  (runcmd "mako")
-  (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")
+  (defun firefox ()
+    (lambda () (interactive) (runcmd "firefox")))
 
-  ;; (add-to-list 'ewm-intercept-prefixes ?\M-\‘)  ; tmm-menubar
-  ;; (add-to-list 'ewm-intercept-prefixes '(s-SPC s-<return> (s-<tab> :fullscreen)))
+  ;; Run on startup
+  (defun runstartup ()
+    (interactive)
+
+    ;; Email (found in layouts section)
+
+    ;; Notification daemon
+    (runcmd "mako")
+
+    ;; Bottom bar
+    (runcmd "waybar")
+
+    ;; Wallpaper
+    (runcmd "swww-daemon")
+    (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites"))
+
+  (runstartup)
+
+  ;; moverule
+  (defvar-local persp-moved nil)
+  (defun moverule (frame regex persp-name switch)
+    ;; Set vars
+    (let* ((persp (or (persp-get-by-name persp-name)
+                      (persp-add-new persp-name)))
+           (win (frame-selected-window frame))
+           (buf (and win (window-buffer win)))
+           (name (and buf (buffer-name buf))))
+      (when (and name
+                 (not (buffer-local-value 'persp-moved buf)) ;; flag to prevent aggressive re-moving
+                 (string-match-p regex name))
+        (message "Moving %S to perspective %S" name persp-name)
+        (with-current-buffer buf
+          (setq persp-moved t))
+        (persp-add-buffer buf persp)
+        (persp-switch persp-name)
+        (spacemacs/goto-buffer-workspace buf) ;; focus newly added buffer
+        (spacemacs/jump-to-last-layout)
+        (cond
+         ((eq (get-current-persp) nil) ;; if in layout 1 (perspectiveless)
+          (previous-buffer)
+          )
+         ((not (eq (get-current-persp) persp)                             ;; if in perspective that isn't destination
+               (persp-remove-buffer buf))))
+        (cond
+         ((eq switch t)
+          (persp-switch persp-name))))))
+
+  ;; Initialize layouts
+  (with-eval-after-load 'persp-mode
+    (run-with-idle-timer
+     0 nil
+     (lambda ()
+       (dolist (name '("Web" "Chat" "Tech" "Music" "Game" "Seven" "Eight" "Nine" "Zero" "Mail"))
+         (persp-switch name))
+
+       ;; Default to layout 1 (perspectiveless)
+       (spacemacs/persp-switch-to-1)
+       (spacemacs/new-empty-buffer)
+
+       ;; Run email AFTER layouts are initialized (needs to go in Mail buffer)
+       (runcmd "thunderbird"))))
+
+
+  ;; Window rules
+  (defun windowrules (frame)
+    (moverule frame "Firefox" "Web" t)
+    (moverule frame "Telegram" "Chat" t)
+    (moverule frame "Discord" "Chat" t)
+    (moverule frame "Spotify" "Music" t)
+    (moverule frame "Lutris" "Game" t)
+    (moverule frame "Thunderbird" "Mail" nil))
+
+  (defvar-local buffer-split nil)
+  (defvar my-buffer-creation-times (make-hash-table :test 'eq))
+  ;; Track buffer creation time
+  (defun track-buffer-creation ()
+    (message "tracking works")
+    (puthash (current-buffer) (float-time) my-buffer-creation-times))
+  ;; (add-hook 'after-change-major-mode-hook #'track-buffer-creation)
+  (defun splitnewbuffers (frame)
+    (message "split called")
+    (let* ((win (frame-selected-window frame))
+           (buf (and win (window-buffer win)))
+           (name (and buf (buffer-name buf)))
+           (created (gethash buf my-buffer-creation-times)))
+
+      (when (and
+             win
+             buf
+
+             ;; only EWM windows (adjust this predicate if needed)
+             (string-match-p "ewm" name)
+
+             ;; prevent re-splitting
+             (not (buffer-local-value 'buffer-split buf))
+
+             ;; only if created within last 1 second
+             created
+             (< (- (float-time) created) 1.0))
+
+        (with-current-buffer buf
+          (setq buffer-split t))
+
+        ;; store old buffer BEFORE splitting
+        (let ((old-buf (window-buffer win)))
+          (let ((new-win (split-window-sensibly win)))
+            (when new-win
+              ;; restore old buffer in original window
+              (set-window-buffer win old-buf)
+              (message "split work")
+              (previous-buffer)
+              ;; show new buffer in new window
+              (set-window-buffer new-win buf)))))))
+
+  ;; Run window rules on buffer change
+  (add-hook 'window-buffer-change-functions #'windowrules)
+  ;; (add-hook 'window-buffer-change-functions #'splitnewbuffers) ;; temporarily disabled while I figure out what kind of logic I want
 
   ;; scad-mode fixes
   (require 'scad-mode)
@@ -726,17 +865,17 @@ before packages are loaded."
         (find-file-existing "/etc/nix-darwin/flake.nix")
       (find-file-existing "/sudo::/etc/nixos/flake.nix")))
 
+  (defun spacemacsbind (combo function)
+    (define-key evil-normal-state-map (kbd combo) function)
+    (define-key evil-visual-state-map (kbd combo) function)
+    (define-key evil-evilified-state-map (kbd combo) function)
+    (define-key evil-motion-state-map (kbd combo) function))
 
   (define-key evil-normal-state-map (kbd "SPC i s") #'insert-snippet)
-  (define-key evil-normal-state-map (kbd "SPC f e n h") #'find-home-manager)
-  (define-key evil-visual-state-map (kbd "SPC f e n h") #'find-home-manager)
-  (define-key evil-normal-state-map (kbd "SPC f e n n") #'find-nixos-config)
-  (define-key evil-visual-state-map (kbd "SPC f e n n") #'find-nixos-config)
-  (define-key evil-normal-state-map (kbd "SPC f e n f") #'find-nixos-flake)
-  (define-key evil-visual-state-map (kbd "SPC f e n f") #'find-nixos-flake)
-  (define-key evil-normal-state-map (kbd "SPC f e n x") #'find-nixos-extra)
-  (define-key evil-visual-state-map (kbd "SPC f e n x") #'find-nixos-extra)
-
+  (spacemacsbind "SPC f e n h" #'find-home-manager)
+  (spacemacsbind "SPC f e n n" #'find-nixos-config)
+  (spacemacsbind "SPC f e n f" #'find-nixos-flake)
+  (spacemacsbind "SPC f e n x" #'find-nixos-extra)
 
   ;; (treemacs :variables treemacs-use-git-mode 'deferred)
   )
