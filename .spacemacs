@@ -32,8 +32,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(rust
-     html
+   '(html
      octave
      php
      go
@@ -277,7 +276,6 @@ It should only modify the values of Spacemacs settings."
    ;; (default "SPC")
    dotspacemacs-emacs-command-key "SPC"
 
-
    ;; The key used for Vim Ex commands (default ":")
    dotspacemacs-ex-command-key ":"
 
@@ -352,7 +350,7 @@ It should only modify the values of Spacemacs settings."
    ;; another same-purpose window is available. If non-nil, `switch-to-buffer'
    ;; displays the buffer in a same-purpose window even if the buffer can be
    ;; displayed in the current window. (default nil)
-   dotspacemacs-switch-to-buffer-prefers-purpose t
+   dotspacemacs-switch-to-buffer-prefers-purpose nil
 
    ;; If non-nil a progress bar is displayed when spacemacs is loading. This
    ;; may increase the boot time on some systems and emacs builds, set it to
@@ -375,7 +373,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
    ;; variable with `dotspacemacs-maximized-at-startup' to obtain fullscreen
    ;; without external boxes. Also disables the internal border. (default nil)
-   dotspacemacs-undecorated-at-startup t
+   dotspacemacs-undecorated-at-startup nil
 
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
@@ -410,7 +408,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Show the scroll bar while scrolling. The auto hide time can be configured
    ;; by setting this variable to a number. (default t) := <=
-   dotspacemacs-scroll-bar-while-scrolling nil
+   dotspacemacs-scroll-bar-while-scrolling t
 
    ;; Control line numbers activation.
    ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
@@ -553,7 +551,6 @@ default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env)
-
   )
 
 (defun dotspacemacs/user-init ()
@@ -562,24 +559,6 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
-
-  ;; add window transparency
-  (add-to-list 'default-frame-alist '(alpha-background . 80))
-
-  (use-package ewm
-    :bind (:map ewm-mode-map
-                ("s-\\" . (lambda () (interactive) (runcmd "firefox")))
-                ("s-W" . (lambda () (interactive)
-                           (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
-                ("s-<tab>" . (lambda () (interactive)
-                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
-                ("<Print>" . (lambda () (interactive)
-                               (runcmd "hyprshot -m region -o /home/james/Screenshots/")))
-                ("s-SPC" . spacemacs-cmds)
-                ("s-x" . kill-buffer-and-window)
-                ("s-<return>" . terminal))
-    )
-
   )
 
 
@@ -601,7 +580,6 @@ before packages are loaded."
   ;; (require 'exwm-config)
   ;; (exwm-config-example)
   ;; (add-hook 'prog-mode-hook)
-  (require 'vterm)
 
   ;; make spacemacs-buffer-mode use normal-state for custom keybinds
   (add-hook 'spacemacs-buffer-mode-hook
@@ -610,37 +588,14 @@ before packages are loaded."
                               (lambda ()
                                 (evil-normal-state)))))
 
-  ;; make dired-mode use normal-state for custom keybinds
-  (add-hook 'dired-mode-hook
-            (lambda ()
-              (run-with-timer 0.1 nil
-                              (lambda ()
-                                (evil-normal-state)))))
-
-
-  (defun terminal ()
-    (interactive)
-    (split-window-sensibly)
-    (runcmd "alacritty"))
-
-  (defun runcmd (cmd)
-    (interactive)
-    (start-process-shell-command cmd nil cmd))
-
-  ;; Run on startup
-  (runcmd "swww-daemon")
-  (runcmd "mako")
-  (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")
-
-  ;; (add-to-list 'ewm-intercept-prefixes ?\M-\‘)  ; tmm-menubar
-  ;; (add-to-list 'ewm-intercept-prefixes '(s-SPC s-<return> (s-<tab> :fullscreen)))
-
   ;; scad-mode fixes
   (require 'scad-mode)
   (add-hook 'scad-preview-mode-hook
             (lambda ()
               (evil-make-intercept-map scad-preview-mode-map)))
 
+  ;; add window transparency
+  (add-to-list 'default-frame-alist '(alpha-background . 80))
 
   ;; format go code on save
   (use-package go-mode
@@ -703,7 +658,6 @@ before packages are loaded."
     (insert-file-contents filename)
     )
 
-
   (defun find-home-manager ()
     "Edit the home-manager dotfile, in the current window." ; Doc string.
     (interactive)
@@ -728,14 +682,10 @@ before packages are loaded."
 
 
   (define-key evil-normal-state-map (kbd "SPC i s") #'insert-snippet)
-  (define-key evil-normal-state-map (kbd "SPC f e n h") #'find-home-manager)
-  (define-key evil-visual-state-map (kbd "SPC f e n h") #'find-home-manager)
-  (define-key evil-normal-state-map (kbd "SPC f e n n") #'find-nixos-config)
-  (define-key evil-visual-state-map (kbd "SPC f e n n") #'find-nixos-config)
-  (define-key evil-normal-state-map (kbd "SPC f e n f") #'find-nixos-flake)
-  (define-key evil-visual-state-map (kbd "SPC f e n f") #'find-nixos-flake)
-  (define-key evil-normal-state-map (kbd "SPC f e n x") #'find-nixos-extra)
-  (define-key evil-visual-state-map (kbd "SPC f e n x") #'find-nixos-extra)
+  (define-key evil-normal-state-map (kbd "SPC f e f h") #'find-home-manager)
+  (define-key evil-normal-state-map (kbd "SPC f e f n") #'find-nixos-config)
+  (define-key evil-normal-state-map (kbd "SPC f e f f") #'find-nixos-flake)
+  (define-key evil-normal-state-map (kbd "SPC f e f x") #'find-nixos-extra)
 
 
   ;; (treemacs :variables treemacs-use-git-mode 'deferred)
@@ -793,18 +743,18 @@ This function is called at the very end of Spacemacs initialization."
                           lsp-mode lsp-treemacs macrostep markdown-mode
                           markdown-toc mmm-mode multi-line nameless nix-buffer
                           nix-mode nix-sandbox open-junk-file org-superstar
-                          overseer package-build paradox password-generator
-                          pcre2el popwin pos-tip quelpa quickrun
-                          rainbow-delimiters request restart-emacs ron-mode
-                          rust-mode rustic spaceline spacemacs-purpose-popwin
+                          overseer package-build paradox
+                          password-generator pcre2el popwin pos-tip quelpa
+                          quickrun rainbow-delimiters request restart-emacs
+                          spaceline spacemacs-purpose-popwin
                           spacemacs-whitespace-cleanup string-edit-at-point
-                          string-inflection swiper symbol-overlay symon term+
+                          string-inflection swiper symbol-overlay symon
                           term-cursor tern tide toc-org treemacs-evil
                           treemacs-icons-dired treemacs-persp treemacs-projectile
                           typescript-mode undo-tree use-package uuidgen v-mode
                           valign vi-tilde-fringe vim-powerline vmd-mode
-                          volatile-highlights vterm w3m web-mode which-key winum
-                          writeroom-mode ws-butler xterm-color yaml yasnippet)))
+                          volatile-highlights w3m web-mode which-key winum
+                          writeroom-mode ws-butler yaml yasnippet)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
