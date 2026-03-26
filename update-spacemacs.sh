@@ -6,6 +6,7 @@ OLD_HASH="$(nix hash file /tmp/dotspacemacs/.spacemacs)"
 rm /tmp/dotspacemacs/.spacemacs
 cp ~/.spacemacs /tmp/dotspacemacs/.spacemacs
 NEW_HASH="$(nix hash file /tmp/dotspacemacs/.spacemacs)"
+echo "NEW HASH: $NEW_HASH"
 
 git add -u .
 git commit -m "$(date --iso-8601=s)"
