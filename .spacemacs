@@ -592,6 +592,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
                 ;; Applications
                 ("<PowerOff>" . (lambda () (interactive) (runcmd "archlinux-logout")))
                 ("s-\\" . (lambda () (interactive) (runcmd "firefox")))
+                ("s-|" . (lambda () (interactive) (runcmd "vesktop & Telegram")))
                 ("s-W" . (lambda () (interactive)
                            (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
                 ("s-<tab>" . (lambda () (interactive)
@@ -643,7 +644,12 @@ before packages are loaded."
                               (lambda ()
                                 (evil-normal-state)))))
 
-
+  (defun trellostart ()
+    (interactive)
+    (spacemacs/window-split-double-columns)
+    (runcmd "alacritty -e 'echo -e \"board select 6847593d5d7da7825d8f8cb6\\n\" \"list cards $(echo -e 'board select 6847593d5d7da7825d8f8cb6\\n' 'list list' | 3llo 2> /dev/null | grep '#1' | head -n 1 | sed 's/\x1b\[[0-9;]*m//g' | cut -c 2-25)\" | 3llo'")
+    (other-window)
+    (runcmd "echo -e \"board select 65fe4fa2af0a6ba78be2966b\\n\" \"list cards 65fe4fa2af0a6ba78be29672\\n\" \"list cards 65fe4fa2af0a6ba78be29673\" | 3llo"))
   (defun terminal ()
     (interactive)
     ;; (split-window-sensibly)
@@ -660,13 +666,20 @@ before packages are loaded."
   (defun runstartup ()
     (interactive)
 
-    ;; Email (found in layouts section)
+    ;; Email
+    (runcmd "thunderbird")
 
     ;; Notification daemon
     (runcmd "mako")
 
+    ;; Auth agent
+    (runcmd "lxpolkit")
+
     ;; Bottom bar
     (runcmd "waybar")
+
+    ;; Trello
+    (trellostart)
 
     ;; Wallpaper
     (runcmd "swww-daemon")
@@ -703,6 +716,70 @@ before packages are loaded."
          ((eq switch t)
           (persp-switch persp-name))))))
 
+
+  ;; No hidden windows inside perspectives
+  (defun ensure-persp-buffers-visible ()
+    (let ((persp (get-current-persp)))
+      (when persp ;; skip default (nil)
+        (let* ((scratch-name (format "*scratch-%s*" (persp-name persp)))
+               (scratch (get-buffer scratch-name))
+               (buffers (persp-buffers persp)))
+
+          ;; --- EMPTY PERSPECTIVE → FORCE SCRATCH ---
+          (when (null buffers)
+            (let ((scratch (get-buffer-create scratch-name)))
+              (with-current-buffer scratch
+                (unless (eq major-mode 'lisp-interaction-mode)
+                  (lisp-interaction-mode)))
+
+              (dolist (win (window-list))
+                (set-window-buffer win scratch))
+
+              (persp-add-buffer scratch persp)
+              (cl-return-from ensure-persp-buffers-visible)))
+
+          ;; --- REMOVE SCRATCH IF REAL BUFFERS EXIST ---
+          (when (and scratch
+                     (> (length buffers) 1)) ;; something else exists
+            (setq buffers (delq scratch buffers)))
+
+          ;; --- NORMAL LOGIC ---
+          (let* ((wins (window-list))
+                 (visible-bufs (mapcar #'window-buffer wins)))
+
+            ;; REMOVE ONLY MANAGED WINDOWS THAT ARE NOW INVALID
+            (dolist (win wins)
+              (when (window-parameter win 'managed-split)
+                (let ((buf (window-buffer win)))
+                  (unless (memq buf buffers)
+                    (when (> (length (window-list)) 1)
+                      (delete-window win))))))
+
+            ;; recompute
+            (setq wins (window-list))
+            (setq visible-bufs (mapcar #'window-buffer wins))
+
+            ;; ADD MISSING BUFFERS
+            (dolist (buf buffers)
+              (unless (memq buf visible-bufs)
+                (let ((new-win (split-window-sensibly)))
+                  (when new-win
+                    (set-window-buffer new-win buf)
+                    (set-window-parameter new-win 'managed-split t)
+                    (push buf visible-bufs))))))))))
+
+  (add-hook 'window-buffer-change-functions
+            (lambda (&rest _) (ensure-persp-buffers-visible)))
+
+  (add-hook 'window-configuration-change-hook
+            #'ensure-persp-buffers-visible)
+
+  (add-hook 'persp-switch-hook
+            #'ensure-persp-buffers-visible)
+
+  (add-hook 'kill-buffer-hook
+            #'ensure-persp-buffers-visible)
+
   ;; Initialize layouts
   (with-eval-after-load 'persp-mode
     (run-with-idle-timer
@@ -713,10 +790,8 @@ before packages are loaded."
 
        ;; Default to layout 1 (perspectiveless)
        (spacemacs/persp-switch-to-1)
-       (spacemacs/new-empty-buffer)
+       (spacemacs/new-empty-buffer))))
 
-       ;; Run email AFTER layouts are initialized (needs to go in Mail buffer)
-       (runcmd "thunderbird"))))
 
 
   ;; Window rules
