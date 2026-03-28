@@ -646,10 +646,19 @@ before packages are loaded."
 
   (defun trellostart ()
     (interactive)
-    (spacemacs/window-split-double-columns)
-    (runcmd "alacritty -e sh -c 'echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist cards $(echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist list\" | 3llo 2> /dev/null | grep \"#1\" | head -n 1 | sed \"s/\x1b\\[[0-9;]*m//g\" | cut -c 2-25)\" | 3llo; cat'")
-    (other-window 1)
-    (runcmd "alacritty -e sh -c 'echo -e \"board select 65fe4fa2af0a6ba78be2966b\nlist cards 65fe4fa2af0a6ba78be29672\nlist cards 65fe4fa2af0a6ba78be29673\" | 3llo; cat'"))
+    (run-with-timer 4 nil
+                    (lambda ()
+                      (other-frame 1)
+                      (spacemacs/window-split-double-columns)
+                      (runcmd "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist cards $(echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist list\" | 3llo 2> /dev/null | grep \"#1\" | head -n 1 | sed \"s/\x1b\\[[0-9;]*m//g\" | cut -c 2-25)\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'")
+                      (run-with-timer 1 nil
+                                      (lambda ()
+                                        (other-window 1)
+                                        (runcmd "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 65fe4fa2af0a6ba78be2966b\nlist cards 65fe4fa2af0a6ba78be29672\nlist cards 65fe4fa2af0a6ba78be29673\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'")
+                                        ))
+                      )
+                    ))
+
 
   (defun terminal ()
     (interactive)
@@ -791,7 +800,8 @@ before packages are loaded."
 
        ;; Default to layout 1 (perspectiveless)
        (spacemacs/persp-switch-to-1)
-       (spacemacs/new-empty-buffer))))
+       ;; (spacemacs/new-empty-buffer)
+       )))
 
 
 
