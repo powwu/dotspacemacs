@@ -33,14 +33,7 @@ This function should only modify configuration layer settings."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(rust
-     html
-     octave
-     php
-     go
-     windows-scripts
-     markdown
-     csv
-     typescript
+     html octave php go windows-scripts markdown csv typescript
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -52,8 +45,7 @@ This function should only modify configuration layer settings."
      ;; git
      helm
      ;; lsp
-     markdown
-     multiple-cursors
+     markdown multiple-cursors
      ;; org
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -72,7 +64,19 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(ewal-spacemacs-themes ewal nix-mode nix-buffer nix-sandbox scad-mode mistty helm v-mode kotlin-mode quelpa quelpa-use-package)
+   dotspacemacs-additional-packages
+   '(ewal-spacemacs-themes
+     ewal
+     nix-mode
+     nix-buffer
+     nix-sandbox
+     scad-mode
+     mistty
+     helm
+     v-mode
+     kotlin-mode
+     quelpa
+     quelpa-use-package)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -205,8 +209,7 @@ It should only modify the values of Spacemacs settings."
    ;; pair of numbers, e.g. `(recents-by-project . (7 .  5))', where the first
    ;; number is the project limit and the second the limit on the recent files
    ;; within a project.
-   dotspacemacs-startup-lists '((recents . 5)
-                                (projects . 7))
+   dotspacemacs-startup-lists '((recents . 5) (projects . 7))
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
@@ -245,9 +248,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(ewal-spacemacs-modern
-                         spacemacs-dark
-                         spacemacs-light)
+   dotspacemacs-themes '(ewal-spacemacs-modern spacemacs-dark spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -265,10 +266,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font or prioritized list of fonts. The `:size' can be specified as
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
-   dotspacemacs-default-font '("Victor Mono"
-                               :size 12.0
-                               :weight normal
-                               :width normal)
+   dotspacemacs-default-font '("Victor Mono" :size 12.0 :weight normal :width normal)
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
@@ -293,7 +291,10 @@ It should only modify the values of Spacemacs settings."
    ;; (default "C-M-m" for terminal mode, "<M-return>" for GUI mode).
    ;; Thus M-RET should work as leader key in both GUI and terminal modes.
    ;; C-M-m also should work in terminal mode, but not in GUI mode.
-   dotspacemacs-major-mode-emacs-leader-key (if window-system "<M-return>" "C-M-m")
+   dotspacemacs-major-mode-emacs-leader-key
+   (if window-system
+       "<M-return>"
+     "C-M-m")
 
    ;; These variables control whether separate commands are bound in the GUI to
    ;; the key pairs `C-i', `TAB' and `C-m', `RET'.
@@ -552,9 +553,7 @@ This function defines the environment variables for your Emacs session. By
 default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
-  (spacemacs/load-spacemacs-env)
-
-  )
+  (spacemacs/load-spacemacs-env))
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
@@ -570,49 +569,66 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (add-to-list 'default-frame-alist '(alpha-background . 80))
 
 
-
-  (use-package ewm
+  (use-package
+    ewm
     :custom
-    (ewm-output-config '(("HDMI-A-1" :width 1920 :height 1080 :scale 1.0 :refresh 144)
-                         ("DP-3" :width 1920 :height 1080 :scale 1.4 :x 3840 :y 0)))
-    :bind (:map ewm-mode-map
-                ;; Layers (Spacemacs workspaces)
-                ("s-1" . spacemacs/persp-switch-to-1)
-                ("s-2" . spacemacs/persp-switch-to-2)
-                ("s-3" . spacemacs/persp-switch-to-3)
-                ("s-4" . spacemacs/persp-switch-to-4)
-                ("s-5" . spacemacs/persp-switch-to-5)
-                ("s-6" . spacemacs/persp-switch-to-6)
-                ("s-7" . spacemacs/persp-switch-to-7)
-                ("s-8" . spacemacs/persp-switch-to-8)
-                ("s-9" . spacemacs/persp-switch-to-9)
-                ("s-0" . spacemacs/persp-switch-to-0)
-                ("M-s-<return>" . (lambda () (interactive) (persp-switch "Mail")))
+    (ewm-output-config
+     '(("HDMI-A-1" :width 1920 :height 1080 :scale 1.0 :refresh 144)
+       ("DP-3" :width 1920 :height 1080 :scale 1.4 :x 3840 :y 0)))
+    :bind
+    (:map
+     ewm-mode-map
+     ;; Layers (Spacemacs workspaces)
+     ("s-1" . spacemacs/persp-switch-to-1)
+     ("s-2" . spacemacs/persp-switch-to-2)
+     ("s-3" . spacemacs/persp-switch-to-3)
+     ("s-4" . spacemacs/persp-switch-to-4)
+     ("s-5" . spacemacs/persp-switch-to-5)
+     ("s-6" . spacemacs/persp-switch-to-6)
+     ("s-7" . spacemacs/persp-switch-to-7)
+     ("s-8" . spacemacs/persp-switch-to-8)
+     ("s-9" . spacemacs/persp-switch-to-9)
+     ("s-0" . spacemacs/persp-switch-to-0)
+     ("M-s-<return>" .
+      (lambda ()
+        (interactive)
+        (persp-switch "Mail")))
 
-                ;; Applications
-                ("<PowerOff>" . (lambda () (interactive) (runcmd "archlinux-logout")))
-                ("s-\\" . (lambda () (interactive) (runcmd "firefox")))
-                ("s-|" . (lambda () (interactive) (runcmd "vesktop & Telegram")))
-                ("s-W" . (lambda () (interactive)
-                           (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
-                ("s-<tab>" . (lambda () (interactive)
-                               (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
-                ("<Print>" . (lambda () (interactive)
-                               (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
-                ("s-SPC" . spacemacs-cmds)
-                ("s-x" . kill-buffer-and-window)
-                ("s-<return>" . terminal))
-    )
-
-  )
+     ;; Applications
+     ("<PowerOff>" .
+      (lambda ()
+        (interactive)
+        (runcmd "archlinux-logout")))
+     ("s-\\" .
+      (lambda ()
+        (interactive)
+        (runcmd "firefox")))
+     ("s-|" .
+      (lambda ()
+        (interactive)
+        (runcmd "vesktop & Telegram")))
+     ("s-W" .
+      (lambda ()
+        (interactive)
+        (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
+     ("s-<tab>" .
+      (lambda ()
+        (interactive)
+        (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
+     ("<Print>" .
+      (lambda ()
+        (interactive)
+        (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
+     ("s-SPC" . spacemacs-cmds)
+     ("s-x" . kill-buffer-and-window)
+     ("s-<return>" . terminal))))
 
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
+dump.")
 
 
 (defun dotspacemacs/user-config ()
@@ -631,33 +647,30 @@ before packages are loaded."
   (setq split-width-threshold 0)
 
   ;; make spacemacs-buffer-mode use normal-state for custom keybinds
-  (add-hook 'spacemacs-buffer-mode-hook
-            (lambda ()
-              (run-with-timer 0.1 nil
-                              (lambda ()
-                                (evil-normal-state)))))
+  (add-hook
+   'spacemacs-buffer-mode-hook
+   (lambda () (run-with-timer 0.1 nil (lambda () (evil-normal-state)))))
 
   ;; make dired-mode use normal-state for custom keybinds
-  (add-hook 'dired-mode-hook
-            (lambda ()
-              (run-with-timer 0.1 nil
-                              (lambda ()
-                                (evil-normal-state)))))
+  (add-hook
+   'dired-mode-hook
+   (lambda () (run-with-timer 0.1 nil (lambda () (evil-normal-state)))))
 
   (defun trellostart ()
     (interactive)
-    (run-with-timer 4 nil
-                    (lambda ()
-                      (other-frame 1)
-                      (spacemacs/window-split-double-columns)
-                      (runcmd "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist cards $(echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist list\" | 3llo 2> /dev/null | grep \"#1\" | head -n 1 | sed \"s/\x1b\\[[0-9;]*m//g\" | cut -c 2-25)\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'")
-                      (run-with-timer 1 nil
-                                      (lambda ()
-                                        (other-window 1)
-                                        (runcmd "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 65fe4fa2af0a6ba78be2966b\nlist cards 65fe4fa2af0a6ba78be29672\nlist cards 65fe4fa2af0a6ba78be29673\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'")
-                                        ))
-                      )
-                    ))
+    (run-with-timer
+     4 nil
+     (lambda ()
+       (other-frame 1)
+       (spacemacs/window-split-double-columns)
+       (runcmd
+        "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist cards $(echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist list\" | 3llo 2> /dev/null | grep \"#1\" | head -n 1 | sed \"s/\x1b\\[[0-9;]*m//g\" | cut -c 2-25)\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'")
+       (run-with-timer
+        1 nil
+        (lambda ()
+          (other-window 1)
+          (runcmd
+           "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 65fe4fa2af0a6ba78be2966b\nlist cards 65fe4fa2af0a6ba78be29672\nlist cards 65fe4fa2af0a6ba78be29673\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'"))))))
 
 
   (defun terminal ()
@@ -670,7 +683,9 @@ before packages are loaded."
     (start-process-shell-command cmd nil cmd))
 
   (defun firefox ()
-    (lambda () (interactive) (runcmd "firefox")))
+    (lambda ()
+      (interactive)
+      (runcmd "firefox")))
 
   ;; Run on startup
   (defun runstartup ()
@@ -701,14 +716,16 @@ before packages are loaded."
   (defvar-local persp-moved nil)
   (defun moverule (frame regex persp-name switch)
     ;; Set vars
-    (let* ((persp (or (persp-get-by-name persp-name)
-                      (persp-add-new persp-name)))
+    (let* ((persp
+            (or (persp-get-by-name persp-name) (persp-add-new persp-name)))
            (win (frame-selected-window frame))
            (buf (and win (window-buffer win)))
            (name (and buf (buffer-name buf))))
-      (when (and name
-                 (not (buffer-local-value 'persp-moved buf)) ;; flag to prevent aggressive re-moving
-                 (string-match-p regex name))
+      (when
+          (and
+           name
+           (not (buffer-local-value 'persp-moved buf)) ;; flag to prevent aggressive re-moving
+           (string-match-p regex name))
         (message "Moving %S to perspective %S" name persp-name)
         (with-current-buffer buf
           (setq persp-moved t))
@@ -718,10 +735,10 @@ before packages are loaded."
         (spacemacs/jump-to-last-layout)
         (cond
          ((eq (get-current-persp) nil) ;; if in layout 1 (perspectiveless)
-          (previous-buffer)
-          )
-         ((not (eq (get-current-persp) persp)                             ;; if in perspective that isn't destination
-               (persp-remove-buffer buf))))
+          (previous-buffer))
+         ((not
+           (eq (get-current-persp) persp) ;; if in perspective that isn't destination
+           (persp-remove-buffer buf))))
         (cond
          ((eq switch t)
           (persp-switch persp-name))))))
@@ -778,31 +795,38 @@ before packages are loaded."
                     (set-window-parameter new-win 'managed-split t)
                     (push buf visible-bufs))))))))))
 
-  (add-hook 'window-buffer-change-functions
-            (lambda (&rest _) (ensure-persp-buffers-visible)))
+  (add-hook
+   'window-buffer-change-functions
+   (lambda (&rest _) (ensure-persp-buffers-visible)))
 
-  (add-hook 'window-configuration-change-hook
-            #'ensure-persp-buffers-visible)
+  (add-hook 'window-configuration-change-hook #'ensure-persp-buffers-visible)
 
-  (add-hook 'persp-switch-hook
-            #'ensure-persp-buffers-visible)
+  (add-hook 'persp-switch-hook #'ensure-persp-buffers-visible)
 
-  (add-hook 'kill-buffer-hook
-            #'ensure-persp-buffers-visible)
+  (add-hook 'kill-buffer-hook #'ensure-persp-buffers-visible)
 
   ;; Initialize layouts
   (with-eval-after-load 'persp-mode
     (run-with-idle-timer
      0 nil
      (lambda ()
-       (dolist (name '("Web" "Chat" "Tech" "Music" "Game" "Seven" "Eight" "Nine" "Zero" "Mail"))
+       (dolist (name
+                '("Web"
+                  "Chat"
+                  "Tech"
+                  "Music"
+                  "Game"
+                  "Seven"
+                  "Eight"
+                  "Nine"
+                  "Zero"
+                  "Mail"))
          (persp-switch name))
 
        ;; Default to layout 1 (perspectiveless)
        (spacemacs/persp-switch-to-1)
        ;; (spacemacs/new-empty-buffer)
        )))
-
 
 
   ;; Window rules
@@ -828,19 +852,17 @@ before packages are loaded."
            (name (and buf (buffer-name buf)))
            (created (gethash buf my-buffer-creation-times)))
 
-      (when (and
-             win
-             buf
+      (when (and win
+                 buf
 
-             ;; only EWM windows (adjust this predicate if needed)
-             (string-match-p "ewm" name)
+                 ;; only EWM windows (adjust this predicate if needed)
+                 (string-match-p "ewm" name)
 
-             ;; prevent re-splitting
-             (not (buffer-local-value 'buffer-split buf))
+                 ;; prevent re-splitting
+                 (not (buffer-local-value 'buffer-split buf))
 
-             ;; only if created within last 1 second
-             created
-             (< (- (float-time) created) 1.0))
+                 ;; only if created within last 1 second
+                 created (< (- (float-time) created) 1.0))
 
         (with-current-buffer buf
           (setq buffer-split t))
@@ -862,20 +884,20 @@ before packages are loaded."
 
   ;; scad-mode fixes
   (require 'scad-mode)
-  (add-hook 'scad-preview-mode-hook
-            (lambda ()
-              (evil-make-intercept-map scad-preview-mode-map)))
+  (add-hook
+   'scad-preview-mode-hook
+   (lambda () (evil-make-intercept-map scad-preview-mode-map)))
 
 
   ;; format go code on save
-  (use-package go-mode
+  (use-package
+    go-mode
     :config
     (when (executable-find "gofmt")
       (setq gofmt-command "gofmt"))
     (defun powwu/go-mode-hook ()
       (add-hook 'before-save-hook #'gofmt-before-save nil 'local))
-    (add-hook 'go-mode-hook #'powwu/go-mode-hook)
-    )
+    (add-hook 'go-mode-hook #'powwu/go-mode-hook))
 
   (defun insert-snippet ()
     "Insert snippet interactively from ~/.snippets" ; Doc string.
@@ -884,49 +906,34 @@ before packages are loaded."
     (cond
      ((eq major-mode 'go-mode)
       (setq filename
-            (completing-read "Snippet: " (f-files "~/.snippets/go/" nil t))
-            )
-      )
+            (completing-read "Snippet: " (f-files "~/.snippets/go/" nil t))))
 
      ((eq major-mode 'elisp-lisp-mode)
       (setq filename
-            (completing-read "Snippet: " (f-files "~/.snippets/elisp/" nil t))
-            )
-      )
+            (completing-read "Snippet: " (f-files "~/.snippets/elisp/" nil t))))
 
      ((eq major-mode 'c-mode)
       (setq filename
-            (completing-read "Snippet: " (f-files "~/.snippets/clike/c/" nil t))
-            )
-      )
+            (completing-read
+             "Snippet: " (f-files "~/.snippets/clike/c/" nil t))))
 
      ((eq major-mode 'c++-mode)
       (setq filename
-            (completing-read "Snippet: " (f-files "~/.snippets/clike/" nil t))
-            )
-      )
+            (completing-read "Snippet: " (f-files "~/.snippets/clike/" nil t))))
 
      ((eq major-mode 'nix-mode)
       (setq filename
-            (completing-read "Snippet: " (f-files "~/.snippets/nix/" nil t))
-            )
-      )
+            (completing-read "Snippet: " (f-files "~/.snippets/nix/" nil t))))
 
      ((eq major-mode 'v-mode)
       (setq filename
-            (completing-read "Snippet: " (f-files "~/.snippets/nix/" nil t))
-            )
-      )
-
+            (completing-read "Snippet: " (f-files "~/.snippets/nix/" nil t))))
 
 
      (t ; Default condition
       (setq filename
-            (completing-read "Snippet: " (f-files "~/.snippets/" nil t))
-            )
-      ))
-    (insert-file-contents filename)
-    )
+            (completing-read "Snippet: " (f-files "~/.snippets/" nil t)))))
+    (insert-file-contents filename))
 
 
   (defun find-home-manager ()
@@ -985,56 +992,194 @@ This function is called at the very end of Spacemacs initialization."
        "bbb13492a15c3258f29c21d251da1e62f1abb8bbd492386a673dcfab474186af"
        "edf5e3ea8b3bbb4602feef2dfac8a6d5dae316fb78e84f360d55dfda0d37fa09"
        "41098e2f8fa67dc51bbe89cce4fb7109f53a164e3a92356964c72f76d068587e"
-       "ba72dfc6bb260a9d8609136b9166e04ad0292b9760a3e2431cf0cd0679f83c3a" default))
+       "ba72dfc6bb260a9d8609136b9166e04ad0292b9760a3e2431cf0cd0679f83c3a"
+       default))
    '(package-selected-packages
-     '(ace-jump-helm-line ace-link add-node-modules-path aggressive-indent
-                          all-the-icons auto-compile auto-highlight-symbol bui
-                          centered-cursor-mode clean-aindent-mode
-                          column-enforce-mode company company-emoji company-go
-                          counsel counsel-gtags csv-mode dap-mode define-word
-                          devdocs diminish dired-quick-sort dotenv-mode drag-stuff
-                          dumb-jump editorconfig elisp-def elisp-slime-nav
-                          emmet-mode emoji-cheat-sheet-plus emr eval-sexp-fu
-                          evil-anzu evil-args evil-cleverparens evil-collection
-                          evil-easymotion evil-escape evil-evilified-state
-                          evil-exchange evil-goggles evil-iedit-state
-                          evil-indent-plus evil-lion evil-lisp-state evil-matchit
-                          evil-mc evil-nerd-commenter evil-numbers evil-surround
-                          evil-textobj-line evil-tutor evil-unimpaired
-                          evil-visual-mark-mode evil-visualstar
-                          ewal-spacemacs-themes expand-region exwm eyebrowse
-                          fancy-battery fira-code-mode flx-ido flycheck-elsa
-                          flycheck-golangci-lint flycheck-package flycheck-pos-tip
-                          ggtags gh-md go-eldoc go-fill-struct go-gen-test go-guru
-                          go-impl go-mode go-rename go-tag godoctor golden-ratio
-                          google-translate gpt grizzl hasklig-mode helm-ag
-                          helm-company helm-dash helm-descbinds helm-helm-commands
-                          helm-make helm-mode-manager helm-org helm-projectile
-                          helm-purpose helm-selector helm-swoop helm-themes
-                          helm-xref helm-z help-fns+ hide-comnt
-                          highlight-indentation highlight-numbers
-                          highlight-parentheses hl-todo holy-mode hungry-delete
-                          hybrid-mode import-js indent-guide info+ inspector ivy
-                          key-intercept ligature link-hint lorem-ipsum lsp-docker
-                          lsp-mode lsp-treemacs macrostep markdown-mode
-                          markdown-toc mmm-mode multi-line nameless nix-buffer
-                          nix-mode nix-sandbox open-junk-file org-superstar
-                          overseer package-build paradox password-generator
-                          pcre2el popwin pos-tip quelpa quickrun
-                          rainbow-delimiters request restart-emacs ron-mode
-                          rust-mode rustic spaceline spacemacs-purpose-popwin
-                          spacemacs-whitespace-cleanup string-edit-at-point
-                          string-inflection swiper symbol-overlay symon term+
-                          term-cursor tern tide toc-org treemacs-evil
-                          treemacs-icons-dired treemacs-persp treemacs-projectile
-                          typescript-mode undo-tree use-package uuidgen v-mode
-                          valign vi-tilde-fringe vim-powerline vmd-mode
-                          volatile-highlights vterm w3m web-mode which-key winum
-                          writeroom-mode ws-butler xterm-color yaml yasnippet)))
+     '(ace-jump-helm-line
+       ace-link
+       add-node-modules-path
+       aggressive-indent
+       all-the-icons
+       auto-compile
+       auto-highlight-symbol
+       bui
+       centered-cursor-mode
+       clean-aindent-mode
+       column-enforce-mode
+       company
+       company-emoji
+       company-go
+       counsel
+       counsel-gtags
+       csv-mode
+       dap-mode
+       define-word
+       devdocs
+       diminish
+       dired-quick-sort
+       dotenv-mode
+       drag-stuff
+       dumb-jump
+       editorconfig
+       elisp-autofmt
+       elisp-def
+       elisp-slime-nav
+       emmet-mode
+       emoji-cheat-sheet-plus
+       emr
+       eval-sexp-fu
+       evil-anzu
+       evil-args
+       evil-cleverparens
+       evil-collection
+       evil-easymotion
+       evil-escape
+       evil-evilified-state
+       evil-exchange
+       evil-goggles
+       evil-iedit-state
+       evil-indent-plus
+       evil-lion
+       evil-lisp-state
+       evil-matchit
+       evil-mc
+       evil-nerd-commenter
+       evil-numbers
+       evil-surround
+       evil-textobj-line
+       evil-tutor
+       evil-unimpaired
+       evil-visual-mark-mode
+       evil-visualstar
+       ewal-spacemacs-themes
+       expand-region
+       exwm
+       eyebrowse
+       fancy-battery
+       fira-code-mode
+       flx-ido
+       flycheck-elsa
+       flycheck-golangci-lint
+       flycheck-package
+       flycheck-pos-tip
+       ggtags
+       gh-md
+       go-eldoc
+       go-fill-struct
+       go-gen-test
+       go-guru
+       go-impl
+       go-mode
+       go-rename
+       go-tag
+       godoctor
+       golden-ratio
+       google-translate
+       gpt
+       grizzl
+       hasklig-mode
+       helm-ag
+       helm-company
+       helm-dash
+       helm-descbinds
+       helm-helm-commands
+       helm-make
+       helm-mode-manager
+       helm-org
+       helm-projectile
+       helm-purpose
+       helm-selector
+       helm-swoop
+       helm-themes
+       helm-xref
+       helm-z
+       help-fns+
+       hide-comnt
+       highlight-indentation
+       highlight-numbers
+       highlight-parentheses
+       hl-todo
+       holy-mode
+       hungry-delete
+       hybrid-mode
+       import-js
+       indent-guide
+       info+
+       inspector
+       ivy
+       key-intercept
+       ligature
+       link-hint
+       lorem-ipsum
+       lsp-docker
+       lsp-mode
+       lsp-treemacs
+       macrostep
+       markdown-mode
+       markdown-toc
+       mmm-mode
+       multi-line
+       nameless
+       nix-buffer
+       nix-mode
+       nix-sandbox
+       open-junk-file
+       org-superstar
+       overseer
+       package-build
+       paradox
+       password-generator
+       pcre2el
+       popwin
+       pos-tip
+       quelpa
+       quickrun
+       rainbow-delimiters
+       request
+       restart-emacs
+       ron-mode
+       rust-mode
+       rustic
+       spaceline
+       spacemacs-purpose-popwin
+       spacemacs-whitespace-cleanup
+       string-edit-at-point
+       string-inflection
+       swiper
+       symbol-overlay
+       symon
+       term+
+       term-cursor
+       tern
+       tide
+       toc-org
+       treemacs-evil
+       treemacs-icons-dired
+       treemacs-persp
+       treemacs-projectile
+       typescript-mode
+       undo-tree
+       use-package
+       uuidgen
+       v-mode
+       valign
+       vi-tilde-fringe
+       vim-powerline
+       vmd-mode
+       volatile-highlights
+       vterm
+       w3m
+       web-mode
+       which-key
+       winum
+       writeroom-mode
+       ws-butler
+       xterm-color
+       yaml
+       yasnippet)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   )
-  )
+   ))
