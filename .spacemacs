@@ -573,8 +573,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
     ewm
     :custom
     (ewm-output-config
-     '(("HDMI-A-1" :width 1920 :height 1080 :scale 1.0 :refresh 144)
-       ("DP-3" :width 1920 :height 1080 :scale 1.4 :x 3840 :y 0)))
+     '(("HDMI-A-1" :width 1920 :height 1080 :scale 1.0 :refresh 144 :x 0 :y 0)
+       ("DP-3" :width 1920 :height 1080 :scale 1.4 :x 1920 :y 0)))
     :bind
     (:map
      ewm-mode-map
