@@ -620,8 +620,29 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
         (interactive)
         (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
      ("s-SPC" . spacemacs-cmds)
-     ("s-x" . kill-buffer-and-window)
-     ("s-<return>" . terminal))))
+     ("s-x" . closeapp)
+     ("s-<return>" . terminal)))
+
+
+
+
+  (add-to-list 'ewm-intercept-prefixes '("s-1" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-2" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-3" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-4" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-5" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-6" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-7" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-8" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-9" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-0" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("M-s-<return>" :fullscreen))
+
+  (add-to-list 'ewm-intercept-prefixes '("s-x" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("<PowerOff>" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("<Print>" :fullscreen))
+  (add-to-list 'ewm-intercept-prefixes '("s-<tab>" :fullscreen))
+  )
 
 
 (defun dotspacemacs/user-load ()
@@ -646,6 +667,12 @@ before packages are loaded."
   (setq split-height-threshold nil)
   (setq split-width-threshold 0)
 
+  ;; focus follows mouse
+  (ewm-set-focus-follows-mouse t)
+  ;; (setq mouse-autoselect-window)
+  ;; (setq focus-follows-mouse t)
+  ;; (setq ewm-focus-follows-mouse t)
+
   ;; make spacemacs-buffer-mode use normal-state for custom keybinds
   (add-hook
    'spacemacs-buffer-mode-hook
@@ -655,6 +682,34 @@ before packages are loaded."
   (add-hook
    'dired-mode-hook
    (lambda () (run-with-timer 0.1 nil (lambda () (evil-normal-state)))))
+
+  (defun closeapp ()
+    (interactive)
+    (let* ((persp (get-current-persp))
+           (frame (selected-frame))
+           (win (frame-selected-window frame))
+           (buf (and win (window-buffer win))))
+
+      (when (and persp win buf)
+        (let* ((wins-in-persp
+                (cl-remove-if-not
+                 (lambda (w)
+                   (memq (window-buffer w) (persp-buffers persp)))
+                 (get-buffer-window-list buf nil t)))
+
+               (in-other-persps
+                (persp-buffer-in-other-p buf persp)))
+
+          (cond
+           (in-other-persps
+            (persp-remove-buffer buf persp)
+            (delete-window win))
+
+           ((= (length wins-in-persp) 1)
+            (kill-buffer buf))
+
+           (t
+            (delete-window win)))))))
 
   (defun trellostart ()
     (interactive)
@@ -717,7 +772,9 @@ before packages are loaded."
   (defun moverule (frame regex persp-name switch)
     ;; Set vars
     (let* ((persp
-            (or (persp-get-by-name persp-name) (persp-add-new persp-name)))
+            (or (persp-get-by-name persp-name)
+                (persp-add-new persp-name)))
+           (current (get-current-persp)) ;; <-- capture BEFORE switching
            (win (frame-selected-window frame))
            (buf (and win (window-buffer win)))
            (name (and buf (buffer-name buf))))
@@ -734,17 +791,14 @@ before packages are loaded."
         (spacemacs/goto-buffer-workspace buf) ;; focus newly added buffer
         (spacemacs/jump-to-last-layout)
         (cond
-         ((eq (get-current-persp) nil) ;; if in layout 1 (perspectiveless)
+         ((eq current nil) ;; if originally in layout 1 (perspectiveless)
           (previous-buffer))
-         ((not
-           (eq (get-current-persp) persp) ;; if in perspective that isn't destination
-           (persp-remove-buffer buf))))
+         ((not (eq current persp)) ;; if in perspective that isn't destination
+          (persp-remove-buffer buf current)))
         (cond
          ((eq switch t)
           (persp-switch persp-name))))))
 
-
-  ;; No hidden windows inside perspectives
   (defun ensure-persp-buffers-visible ()
     (let ((persp (get-current-persp)))
       (when persp ;; skip default (nil)
@@ -752,49 +806,51 @@ before packages are loaded."
                (scratch (get-buffer scratch-name))
                (buffers (persp-buffers persp)))
 
-          ;; --- EMPTY PERSPECTIVE → FORCE SCRATCH ---
-          (when (null buffers)
-            (let ((scratch (get-buffer-create scratch-name)))
-              (with-current-buffer scratch
-                (unless (eq major-mode 'lisp-interaction-mode)
-                  (lisp-interaction-mode)))
+          (if (null buffers)
+              ;; --- EMPTY PERSPECTIVE → FORCE SCRATCH ---
+              (let ((scratch (get-buffer-create scratch-name)))
+                (with-current-buffer scratch
+                  (unless (eq major-mode 'lisp-interaction-mode)
+                    (lisp-interaction-mode)))
 
-              (dolist (win (window-list))
-                (set-window-buffer win scratch))
+                (dolist (win (window-list))
+                  (set-window-buffer win scratch))
 
-              (persp-add-buffer scratch persp)
-              (cl-return-from ensure-persp-buffers-visible)))
+                (persp-add-buffer scratch persp))
 
-          ;; --- REMOVE SCRATCH IF REAL BUFFERS EXIST ---
-          (when (and scratch
-                     (> (length buffers) 1)) ;; something else exists
-            (setq buffers (delq scratch buffers)))
+            ;; --- NON-EMPTY → NORMAL LOGIC ---
 
-          ;; --- NORMAL LOGIC ---
-          (let* ((wins (window-list))
-                 (visible-bufs (mapcar #'window-buffer wins)))
+            ;; --- REMOVE SCRATCH IF REAL BUFFERS EXIST ---
+            (when (and scratch
+                       (> (length buffers) 1)) ;; something else exists
+              (setq buffers (delq scratch buffers)))
 
-            ;; REMOVE ONLY MANAGED WINDOWS THAT ARE NOW INVALID
-            (dolist (win wins)
-              (when (window-parameter win 'managed-split)
+            ;; --- NORMAL LOGIC ---
+            (let* ((wins (window-list))
+                   (visible-bufs (mapcar #'window-buffer wins)))
+
+              ;; REMOVE ONLY WINDOWS THAT ARE NOW INVALID
+              (dolist (win wins)
                 (let ((buf (window-buffer win)))
-                  (unless (memq buf buffers)
-                    (when (> (length (window-list)) 1)
-                      (delete-window win))))))
+                  (unless (or
+                           (memq buf buffers)
+                           (window-minibuffer-p win)
+                           (string-prefix-p "*helm" (buffer-name buf)))
+                    (if buffers
+                        (delete-window win)))))
 
-            ;; recompute
-            (setq wins (window-list))
-            (setq visible-bufs (mapcar #'window-buffer wins))
+              ;; recompute
+              (setq wins (window-list))
+              (setq visible-bufs (mapcar #'window-buffer wins))
 
-            ;; ADD MISSING BUFFERS
-            (dolist (buf buffers)
-              (unless (memq buf visible-bufs)
-                (let ((new-win (split-window-sensibly)))
-                  (when new-win
-                    (set-window-buffer new-win buf)
-                    (set-window-parameter new-win 'managed-split t)
-                    (push buf visible-bufs))))))))))
-
+              ;; ADD MISSING BUFFERS
+              (dolist (buf buffers)
+                (unless (memq buf visible-bufs)
+                  (let ((new-win (split-window-sensibly)))
+                    (when new-win
+                      (set-window-buffer new-win buf)
+                      (set-window-parameter new-win 'managed-split t)
+                      (push buf visible-bufs)))))))))))
   (add-hook
    'window-buffer-change-functions
    (lambda (&rest _) (ensure-persp-buffers-visible)))
