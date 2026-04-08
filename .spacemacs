@@ -758,6 +758,9 @@ before packages are loaded."
     ;; Bottom bar
     (runcmd "waybar")
 
+    ;; Sunshine
+    (runcmd "systemctl --user start sunshine")
+
     ;; Trello
     (trellostart)
 
