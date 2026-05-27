@@ -551,7 +551,7 @@ It should only modify the values of Spacemacs settings."
   "Environment variables setup.
 This function defines the environment variables for your Emacs session. By
 default it calls `spacemacs/load-spacemacs-env' which loads the environment
-variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
+variables declared in `~/.spacemacs.env' or `~/.spaceacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env))
 
@@ -569,79 +569,85 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (add-to-list 'default-frame-alist '(alpha-background . 80))
 
 
-  (use-package
-    ewm
-    :custom
-    (ewm-output-config
-     '(("HDMI-A-1" :width 1920 :height 1080 :scale 1.0 :refresh 144 :x 0 :y 0)
-       ("DP-3" :width 1920 :height 1080 :scale 1.4 :x 1920 :y 0)))
-    :bind
-    (:map
-     ewm-mode-map
-     ;; Layers (Spacemacs workspaces)
-     ("s-1" . spacemacs/persp-switch-to-1)
-     ("s-2" . spacemacs/persp-switch-to-2)
-     ("s-3" . spacemacs/persp-switch-to-3)
-     ("s-4" . spacemacs/persp-switch-to-4)
-     ("s-5" . spacemacs/persp-switch-to-5)
-     ("s-6" . spacemacs/persp-switch-to-6)
-     ("s-7" . spacemacs/persp-switch-to-7)
-     ("s-8" . spacemacs/persp-switch-to-8)
-     ("s-9" . spacemacs/persp-switch-to-9)
-     ("s-0" . spacemacs/persp-switch-to-0)
-     ("M-s-<return>" .
-      (lambda ()
-        (interactive)
-        (persp-switch "Mail")))
+  ;; (use-package
+  ;;   ewm
+  ;;   :custom
+  ;;   (ewm-output-config
+  ;;    '(("HDMI-A-1" :width 1920 :height 1080 :scale 1.0 :refresh 144 :x 0 :y 0)
+  ;;      ("DP-3" :width 1920 :height 1080 :scale 1.4 :x 1920 :y 0)
+  ;;      ("eDP-1" :width 2256 :height 1504 :scale 1.4 :x 0 :y 0)))
+  ;;   (ewm-input-config
+  ;;    '((touchpad :natural-scroll nil :tap t :dwt t)
+  ;;      (keyboard :repeat-delay 200 :repeat-rate 25
+  ;;                :xkb-layouts "us,es"
+  ;;                :xkb-options "ctrl:nocaps,grp:alt_shift_toggle")))
+  ;;   :bind
+  ;;   (:map
+  ;;    ewm-mode-map
+  ;;    ;; Layers (Spacemacs workspaces)
+  ;;    ("s-1" . spacemacs/persp-switch-to-1)
+  ;;    ("s-2" . spacemacs/persp-switch-to-2)
+  ;;    ("s-3" . spacemacs/persp-switch-to-3)
+  ;;    ("s-4" . spacemacs/persp-switch-to-4)
+  ;;    ("s-5" . spacemacs/persp-switch-to-5)
+  ;;    ("s-6" . spacemacs/persp-switch-to-6)
+  ;;    ("s-7" . spacemacs/persp-switch-to-7)
+  ;;    ("s-8" . spacemacs/persp-switch-to-8)
+  ;;    ("s-9" . spacemacs/persp-switch-to-9)
+  ;;    ("s-0" . spacemacs/persp-switch-to-0)
+  ;;    ("M-s-<return>" .
+  ;;     (lambda ()
+  ;;       (interactive)
+  ;;       (persp-switch "Mail")))
 
-     ;; Applications
-     ("<PowerOff>" .
-      (lambda ()
-        (interactive)
-        (runcmd "archlinux-logout")))
-     ("s-\\" .
-      (lambda ()
-        (interactive)
-        (runcmd "firefox")))
-     ("s-|" .
-      (lambda ()
-        (interactive)
-        (runcmd "vesktop & Telegram")))
-     ("s-W" .
-      (lambda ()
-        (interactive)
-        (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
-     ("s-<tab>" .
-      (lambda ()
-        (interactive)
-        (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
-     ("<Print>" .
-      (lambda ()
-        (interactive)
-        (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
-     ("s-SPC" . spacemacs-cmds)
-     ("s-x" . closeapp)
-     ("s-<return>" . terminal)))
+  ;;    ;; Applications
+  ;;    ("<PowerOff>" .
+  ;;     (lambda ()
+  ;;       (interactive)
+  ;;       (runcmd "archlinux-logout")))
+  ;;    ("s-\\" .
+  ;;     (lambda ()
+  ;;       (interactive)
+  ;;       (runcmd "firefox")))
+  ;;    ("s-|" .
+  ;;     (lambda ()
+  ;;       (interactive)
+  ;;       (runcmd "vesktop & Telegram")))
+  ;;    ("s-W" .
+  ;;     (lambda ()
+  ;;       (interactive)
+  ;;       (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites")))
+  ;;    ("s-<tab>" .
+  ;;     (lambda ()
+  ;;       (interactive)
+  ;;       (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
+  ;;    ("<Print>" .
+  ;;     (lambda ()
+  ;;       (interactive)
+  ;;       (runcmd "hyprshot -m region -o /home/james/Screenshots/ ; sleep 2")))
+  ;;    ("s-SPC" . spacemacs-cmds)
+  ;;    ("s-x" . closeapp)
+  ;;    ("s-<return>" . terminal)))
 
 
 
 
-  (add-to-list 'ewm-intercept-prefixes '("s-1" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-2" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-3" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-4" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-5" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-6" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-7" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-8" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-9" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-0" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("M-s-<return>" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-1" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-2" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-3" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-4" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-5" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-6" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-7" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-8" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-9" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-0" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("M-s-<return>" :fullscreen))
 
-  (add-to-list 'ewm-intercept-prefixes '("s-x" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("<PowerOff>" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("<Print>" :fullscreen))
-  (add-to-list 'ewm-intercept-prefixes '("s-<tab>" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-x" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("<PowerOff>" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("<Print>" :fullscreen))
+  ;; (add-to-list 'ewm-intercept-prefixes '("s-<tab>" :fullscreen))
   )
 
 
@@ -683,262 +689,262 @@ before packages are loaded."
    'dired-mode-hook
    (lambda () (run-with-timer 0.1 nil (lambda () (evil-normal-state)))))
 
-  (defun closeapp ()
-    (interactive)
-    (let* ((persp (get-current-persp))
-           (frame (selected-frame))
-           (win (frame-selected-window frame))
-           (buf (and win (window-buffer win))))
+  ;; (defun closeapp ()
+  ;;   (interactive)
+  ;;   (let* ((persp (get-current-persp))
+  ;;          (frame (selected-frame))
+  ;;          (win (frame-selected-window frame))
+  ;;          (buf (and win (window-buffer win))))
 
-      (when (and persp win buf)
-        (let* ((wins-in-persp
-                (cl-remove-if-not
-                 (lambda (w)
-                   (memq (window-buffer w) (persp-buffers persp)))
-                 (get-buffer-window-list buf nil t)))
+  ;;     (when (and persp win buf)
+  ;;       (let* ((wins-in-persp
+  ;;               (cl-remove-if-not
+  ;;                (lambda (w)
+  ;;                  (memq (window-buffer w) (persp-buffers persp)))
+  ;;                (get-buffer-window-list buf nil t)))
 
-               (in-other-persps
-                (persp-buffer-in-other-p buf persp)))
+  ;;              (in-other-persps
+  ;;               (persp-buffer-in-other-p buf persp)))
 
-          (cond
-           (in-other-persps
-            (persp-remove-buffer buf persp)
-            (delete-window win))
+  ;;         (cond
+  ;;          (in-other-persps
+  ;;           (persp-remove-buffer buf persp)
+  ;;           (delete-window win))
 
-           ((= (length wins-in-persp) 1)
-            (kill-buffer buf))
+  ;;          ((= (length wins-in-persp) 1)
+  ;;           (kill-buffer buf))
 
-           (t
-            (delete-window win)))))))
+  ;;          (t
+  ;;           (delete-window win)))))))
 
-  (defun trellostart ()
-    (interactive)
-    (run-with-timer
-     4 nil
-     (lambda ()
-       (other-frame 1)
-       (spacemacs/window-split-double-columns)
-       (runcmd
-        "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist cards $(echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist list\" | 3llo 2> /dev/null | grep \"#1\" | head -n 1 | sed \"s/\x1b\\[[0-9;]*m//g\" | cut -c 2-25)\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'")
-       (run-with-timer
-        1 nil
-        (lambda ()
-          (other-window 1)
-          (runcmd
-           "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 65fe4fa2af0a6ba78be2966b\nlist cards 65fe4fa2af0a6ba78be29672\nlist cards 65fe4fa2af0a6ba78be29673\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'"))))))
-
-
-  (defun terminal ()
-    (interactive)
-    ;; (split-window-sensibly)
-    (runcmd "alacritty"))
-
-  (defun runcmd (cmd)
-    (interactive)
-    (start-process-shell-command cmd nil cmd))
-
-  (defun firefox ()
-    (lambda ()
-      (interactive)
-      (runcmd "firefox")))
-
-  ;; Run on startup
-  (defun runstartup ()
-    (interactive)
-
-    ;; Email
-    (runcmd "thunderbird")
-
-    ;; Notification daemon
-    (runcmd "mako")
-
-    ;; Auth agent
-    (runcmd "lxpolkit")
-
-    ;; Bottom bar
-    (runcmd "waybar")
-
-    ;; Sunshine
-    (runcmd "systemctl --user start sunshine")
-
-    ;; Trello
-    (trellostart)
-
-    ;; Wallpaper
-    (runcmd "swww-daemon")
-    (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites"))
-
-  (runstartup)
-
-  ;; moverule
-  (defvar-local persp-moved nil)
-  (defun moverule (frame regex persp-name switch)
-    ;; Set vars
-    (let* ((persp
-            (or (persp-get-by-name persp-name)
-                (persp-add-new persp-name)))
-           (current (get-current-persp)) ;; <-- capture BEFORE switching
-           (win (frame-selected-window frame))
-           (buf (and win (window-buffer win)))
-           (name (and buf (buffer-name buf))))
-      (when
-          (and
-           name
-           (not (buffer-local-value 'persp-moved buf)) ;; flag to prevent aggressive re-moving
-           (string-match-p regex name))
-        (message "Moving %S to perspective %S" name persp-name)
-        (with-current-buffer buf
-          (setq persp-moved t))
-        (persp-add-buffer buf persp)
-        (persp-switch persp-name)
-        (spacemacs/goto-buffer-workspace buf) ;; focus newly added buffer
-        (spacemacs/jump-to-last-layout)
-        (cond
-         ((eq current nil) ;; if originally in layout 1 (perspectiveless)
-          (previous-buffer))
-         ((not (eq current persp)) ;; if in perspective that isn't destination
-          (persp-remove-buffer buf current)))
-        (cond
-         ((eq switch t)
-          (persp-switch persp-name))))))
-
-  (defun ensure-persp-buffers-visible ()
-    (let ((persp (get-current-persp)))
-      (when persp ;; skip default (nil)
-        (let* ((scratch-name (format "*scratch-%s*" (persp-name persp)))
-               (scratch (get-buffer scratch-name))
-               (buffers (persp-buffers persp)))
-
-          (if (null buffers)
-              ;; --- EMPTY PERSPECTIVE → FORCE SCRATCH ---
-              (let ((scratch (get-buffer-create scratch-name)))
-                (with-current-buffer scratch
-                  (unless (eq major-mode 'lisp-interaction-mode)
-                    (lisp-interaction-mode)))
-
-                (dolist (win (window-list))
-                  (set-window-buffer win scratch))
-
-                (persp-add-buffer scratch persp))
-
-            ;; --- NON-EMPTY → NORMAL LOGIC ---
-
-            ;; --- REMOVE SCRATCH IF REAL BUFFERS EXIST ---
-            (when (and scratch
-                       (> (length buffers) 1)) ;; something else exists
-              (setq buffers (delq scratch buffers)))
-
-            ;; --- NORMAL LOGIC ---
-            (let* ((wins (window-list))
-                   (visible-bufs (mapcar #'window-buffer wins)))
-
-              ;; REMOVE ONLY WINDOWS THAT ARE NOW INVALID
-              (dolist (win wins)
-                (let ((buf (window-buffer win)))
-                  (unless (or
-                           (memq buf buffers)
-                           (window-minibuffer-p win)
-                           (string-prefix-p "*helm" (buffer-name buf)))
-                    (if buffers
-                        (delete-window win)))))
-
-              ;; recompute
-              (setq wins (window-list))
-              (setq visible-bufs (mapcar #'window-buffer wins))
-
-              ;; ADD MISSING BUFFERS
-              (dolist (buf buffers)
-                (unless (memq buf visible-bufs)
-                  (let ((new-win (split-window-sensibly)))
-                    (when new-win
-                      (set-window-buffer new-win buf)
-                      (set-window-parameter new-win 'managed-split t)
-                      (push buf visible-bufs)))))))))))
-  (add-hook
-   'window-buffer-change-functions
-   (lambda (&rest _) (ensure-persp-buffers-visible)))
-
-  (add-hook 'window-configuration-change-hook #'ensure-persp-buffers-visible)
-
-  (add-hook 'persp-switch-hook #'ensure-persp-buffers-visible)
-
-  (add-hook 'kill-buffer-hook #'ensure-persp-buffers-visible)
-
-  ;; Initialize layouts
-  (with-eval-after-load 'persp-mode
-    (run-with-idle-timer
-     0 nil
-     (lambda ()
-       (dolist (name
-                '("Web"
-                  "Chat"
-                  "Tech"
-                  "Music"
-                  "Game"
-                  "Seven"
-                  "Eight"
-                  "Nine"
-                  "Zero"
-                  "Mail"))
-         (persp-switch name))
-
-       ;; Default to layout 1 (perspectiveless)
-       (spacemacs/persp-switch-to-1)
-       ;; (spacemacs/new-empty-buffer)
-       )))
+  ;; (defun trellostart ()
+  ;;   (interactive)
+  ;;   (run-with-timer
+  ;;    4 nil
+  ;;    (lambda ()
+  ;;      (other-frame 1)
+  ;;      (spacemacs/window-split-double-columns)
+  ;;      (runcmd
+  ;;       "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist cards $(echo -e \"board select 6847593d5d7da7825d8f8cb6\nlist list\" | 3llo 2> /dev/null | grep \"#1\" | head -n 1 | sed \"s/\x1b\\[[0-9;]*m//g\" | cut -c 2-25)\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'")
+  ;;      (run-with-timer
+  ;;       1 nil
+  ;;       (lambda ()
+  ;;         (other-window 1)
+  ;;         (runcmd
+  ;;          "alacritty -e sh -c 'until ping -c1 9.9.9.9 &>/dev/null; do sleep 0.1; done && echo -e \"board select 65fe4fa2af0a6ba78be2966b\nlist cards 65fe4fa2af0a6ba78be29672\nlist cards 65fe4fa2af0a6ba78be29673\" | 3llo 2> /dev/null | grep -E \"#[0-9]+\"; cat'"))))))
 
 
-  ;; Window rules
-  (defun windowrules (frame)
-    (moverule frame "Firefox" "Web" t)
-    (moverule frame "Telegram" "Chat" t)
-    (moverule frame "Discord" "Chat" t)
-    (moverule frame "Spotify" "Music" t)
-    (moverule frame "Lutris" "Game" t)
-    (moverule frame "Thunderbird" "Mail" nil))
+  ;; (defun terminal ()
+  ;;   (interactive)
+  ;;   ;; (split-window-sensibly)
+  ;;   (runcmd "alacritty"))
 
-  (defvar-local buffer-split nil)
-  (defvar my-buffer-creation-times (make-hash-table :test 'eq))
-  ;; Track buffer creation time
-  (defun track-buffer-creation ()
-    (message "tracking works")
-    (puthash (current-buffer) (float-time) my-buffer-creation-times))
-  ;; (add-hook 'after-change-major-mode-hook #'track-buffer-creation)
-  (defun splitnewbuffers (frame)
-    (message "split called")
-    (let* ((win (frame-selected-window frame))
-           (buf (and win (window-buffer win)))
-           (name (and buf (buffer-name buf)))
-           (created (gethash buf my-buffer-creation-times)))
+  ;; (defun runcmd (cmd)
+  ;;   (interactive)
+  ;;   (start-process-shell-command cmd nil cmd))
 
-      (when (and win
-                 buf
+  ;; (defun firefox ()
+  ;;   (lambda ()
+  ;;     (interactive)
+  ;;     (runcmd "firefox")))
 
-                 ;; only EWM windows (adjust this predicate if needed)
-                 (string-match-p "ewm" name)
+  ;; ;; Run on startup
+  ;; (defun runstartup ()
+  ;;   (interactive)
 
-                 ;; prevent re-splitting
-                 (not (buffer-local-value 'buffer-split buf))
+  ;;   ;; Email
+  ;;   (runcmd "thunderbird")
 
-                 ;; only if created within last 1 second
-                 created (< (- (float-time) created) 1.0))
+  ;;   ;; Notification daemon
+  ;;   (runcmd "mako")
 
-        (with-current-buffer buf
-          (setq buffer-split t))
+  ;;   ;; Auth agent
+  ;;   (runcmd "lxpolkit")
 
-        ;; store old buffer BEFORE splitting
-        (let ((old-buf (window-buffer win)))
-          (let ((new-win (split-window-sensibly win)))
-            (when new-win
-              ;; restore old buffer in original window
-              (set-window-buffer win old-buf)
-              (message "split work")
-              (previous-buffer)
-              ;; show new buffer in new window
-              (set-window-buffer new-win buf)))))))
+  ;;   ;; Bottom bar
+  ;;   (runcmd "waybar")
 
-  ;; Run window rules on buffer change
-  (add-hook 'window-buffer-change-functions #'windowrules)
+  ;;   ;; Sunshine
+  ;;   (runcmd "systemctl --user start sunshine")
+
+  ;;   ;; Trello
+  ;;   (trellostart)
+
+  ;;   ;; Wallpaper
+  ;;   (runcmd "swww-daemon")
+  ;;   (runcmd "~/Wallpapers/bin/wallpaper ~/Wallpapers/wallpapers/favorites"))
+
+  ;; (runstartup)
+
+  ;; ;; moverule
+  ;; (defvar-local persp-moved nil)
+  ;; (defun moverule (frame regex persp-name switch)
+  ;;   ;; Set vars
+  ;;   (let* ((persp
+  ;;           (or (persp-get-by-name persp-name)
+  ;;               (persp-add-new persp-name)))
+  ;;          (current (get-current-persp)) ;; <-- capture BEFORE switching
+  ;;          (win (frame-selected-window frame))
+  ;;          (buf (and win (window-buffer win)))
+  ;;          (name (and buf (buffer-name buf))))
+  ;;     (when
+  ;;         (and
+  ;;          name
+  ;;          (not (buffer-local-value 'persp-moved buf)) ;; flag to prevent aggressive re-moving
+  ;;          (string-match-p regex name))
+  ;;       (message "Moving %S to perspective %S" name persp-name)
+  ;;       (with-current-buffer buf
+  ;;         (setq persp-moved t))
+  ;;       (persp-add-buffer buf persp)
+  ;;       (persp-switch persp-name)
+  ;;       (spacemacs/goto-buffer-workspace buf) ;; focus newly added buffer
+  ;;       (spacemacs/jump-to-last-layout)
+  ;;       (cond
+  ;;        ((eq current nil) ;; if originally in layout 1 (perspectiveless)
+  ;;         (previous-buffer))
+  ;;        ((not (eq current persp)) ;; if in perspective that isn't destination
+  ;;         (persp-remove-buffer buf current)))
+  ;;       (cond
+  ;;        ((eq switch t)
+  ;;         (persp-switch persp-name))))))
+
+  ;; (defun ensure-persp-buffers-visible ()
+  ;;   (let ((persp (get-current-persp)))
+  ;;     (when persp ;; skip default (nil)
+  ;;       (let* ((scratch-name (format "*scratch-%s*" (persp-name persp)))
+  ;;              (scratch (get-buffer scratch-name))
+  ;;              (buffers (persp-buffers persp)))
+
+  ;;         (if (null buffers)
+  ;;             ;; --- EMPTY PERSPECTIVE → FORCE SCRATCH ---
+  ;;             (let ((scratch (get-buffer-create scratch-name)))
+  ;;               (with-current-buffer scratch
+  ;;                 (unless (eq major-mode 'lisp-interaction-mode)
+  ;;                   (lisp-interaction-mode)))
+
+  ;;               (dolist (win (window-list))
+  ;;                 (set-window-buffer win scratch))
+
+  ;;               (persp-add-buffer scratch persp))
+
+  ;;           ;; --- NON-EMPTY → NORMAL LOGIC ---
+
+  ;;           ;; --- REMOVE SCRATCH IF REAL BUFFERS EXIST ---
+  ;;           (when (and scratch
+  ;;                      (> (length buffers) 1)) ;; something else exists
+  ;;             (setq buffers (delq scratch buffers)))
+
+  ;;           ;; --- NORMAL LOGIC ---
+  ;;           (let* ((wins (window-list))
+  ;;                  (visible-bufs (mapcar #'window-buffer wins)))
+
+  ;;             ;; REMOVE ONLY WINDOWS THAT ARE NOW INVALID
+  ;;             (dolist (win wins)
+  ;;               (let ((buf (window-buffer win)))
+  ;;                 (unless (or
+  ;;                          (memq buf buffers)
+  ;;                          (window-minibuffer-p win)
+  ;;                          (string-prefix-p "*helm" (buffer-name buf)))
+  ;;                   (if buffers
+  ;;                       (delete-window win)))))
+
+  ;;             ;; recompute
+  ;;             (setq wins (window-list))
+  ;;             (setq visible-bufs (mapcar #'window-buffer wins))
+
+  ;;             ;; ADD MISSING BUFFERS
+  ;;             (dolist (buf buffers)
+  ;;               (unless (memq buf visible-bufs)
+  ;;                 (let ((new-win (split-window-sensibly)))
+  ;;                   (when new-win
+  ;;                     (set-window-buffer new-win buf)
+  ;;                     (set-window-parameter new-win 'managed-split t)
+  ;;                     (push buf visible-bufs)))))))))))
+  ;; (add-hook
+  ;;  'window-buffer-change-functions
+  ;;  (lambda (&rest _) (ensure-persp-buffers-visible)))
+
+  ;; (add-hook 'window-configuration-change-hook #'ensure-persp-buffers-visible)
+
+  ;; (add-hook 'persp-switch-hook #'ensure-persp-buffers-visible)
+
+  ;; (add-hook 'kill-buffer-hook #'ensure-persp-buffers-visible)
+
+  ;; ;; Initialize layouts
+  ;; (with-eval-after-load 'persp-mode
+  ;;   (run-with-idle-timer
+  ;;    0 nil
+  ;;    (lambda ()
+  ;;      (dolist (name
+  ;;               '("Web"
+  ;;                 "Chat"
+  ;;                 "Tech"
+  ;;                 "Music"
+  ;;                 "Game"
+  ;;                 "Seven"
+  ;;                 "Eight"
+  ;;                 "Nine"
+  ;;                 "Zero"
+  ;;                 "Mail"))
+  ;;        (persp-switch name))
+
+  ;;      ;; Default to layout 1 (perspectiveless)
+  ;;      (spacemacs/persp-switch-to-1)
+  ;;      ;; (spacemacs/new-empty-buffer)
+  ;;      )))
+
+
+  ;; ;; Window rules
+  ;; (defun windowrules (frame)
+  ;;   (moverule frame "Firefox" "Web" t)
+  ;;   (moverule frame "Telegram" "Chat" t)
+  ;;   (moverule frame "Discord" "Chat" t)
+  ;;   (moverule frame "Spotify" "Music" t)
+  ;;   (moverule frame "Lutris" "Game" t)
+  ;;   (moverule frame "Thunderbird" "Mail" nil))
+
+  ;; (defvar-local buffer-split nil)
+  ;; (defvar my-buffer-creation-times (make-hash-table :test 'eq))
+  ;; ;; Track buffer creation time
+  ;; (defun track-buffer-creation ()
+  ;;   (message "tracking works")
+  ;;   (puthash (current-buffer) (float-time) my-buffer-creation-times))
+  ;; ;; (add-hook 'after-change-major-mode-hook #'track-buffer-creation)
+  ;; (defun splitnewbuffers (frame)
+  ;;   (message "split called")
+  ;;   (let* ((win (frame-selected-window frame))
+  ;;          (buf (and win (window-buffer win)))
+  ;;          (name (and buf (buffer-name buf)))
+  ;;          (created (gethash buf my-buffer-creation-times)))
+
+  ;;     (when (and win
+  ;;                buf
+
+  ;;                ;; only EWM windows (adjust this predicate if needed)
+  ;;                (string-match-p "ewm" name)
+
+  ;;                ;; prevent re-splitting
+  ;;                (not (buffer-local-value 'buffer-split buf))
+
+  ;;                ;; only if created within last 1 second
+  ;;                created (< (- (float-time) created) 1.0))
+
+  ;;       (with-current-buffer buf
+  ;;         (setq buffer-split t))
+
+  ;;       ;; store old buffer BEFORE splitting
+  ;;       (let ((old-buf (window-buffer win)))
+  ;;         (let ((new-win (split-window-sensibly win)))
+  ;;           (when new-win
+  ;;             ;; restore old buffer in original window
+  ;;             (set-window-buffer win old-buf)
+  ;;             (message "split work")
+  ;;             (previous-buffer)
+  ;;             ;; show new buffer in new window
+  ;;             (set-window-buffer new-win buf)))))))
+
+  ;; ;; Run window rules on buffer change
+  ;; (add-hook 'window-buffer-change-functions #'windowrules)
   ;; (add-hook 'window-buffer-change-functions #'splitnewbuffers) ;; temporarily disabled while I figure out what kind of logic I want
 
   ;; scad-mode fixes
