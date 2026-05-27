@@ -674,7 +674,6 @@ before packages are loaded."
   (setq split-width-threshold 0)
 
   ;; focus follows mouse
-  (ewm-set-focus-follows-mouse t)
   ;; (setq mouse-autoselect-window)
   ;; (setq focus-follows-mouse t)
   ;; (setq ewm-focus-follows-mouse t)
